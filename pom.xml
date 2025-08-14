@@ -8,6 +8,7 @@
   <artifactId>clinicalpsychology</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
+  
   <name>Archetype - clinicalpsychology</name>
 
   <!-- FIXME change it to the project's website -->
