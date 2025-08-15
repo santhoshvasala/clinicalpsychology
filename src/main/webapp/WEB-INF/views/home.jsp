@@ -11,26 +11,26 @@
 	<div class="container mt-5 bg-light">
 		<div class="row">
 			<div class="col-md-12">
-				<h1 class="text-center mb-3 mt-4 text-warning">Welcome to Product
-					App</h1>
+				<h1 class="text-center mb-3 mt-4 text-warning">Welcome to Clinical Psychology</h1>
 				<table class="table table-light">
 					<thead class="thead-dark">
 						<tr>
 							<th scope="col">S.NO</th>
-							<th scope="col">Product Name</th>
-							<th scope="col">Product Description</th>
-							<th scope="col">Product Price</th>
-							<th scope="col">Action</th>
+							<th scope="col">Patient Name</th>
+							<th scope="col">Mobile Number</th>
+							<th scope="col">Email</th>
+							<th scope="col">Place</th>
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach items="${product}" var="p">
+						<c:forEach items="${patients}" var="p">
 
 							<tr class="table-light">
 								<th scope="row">${p.id}</th>
-								<td>${p.name}</td>
-								<td>${p.description}</td>
-								<td class="font-weight-bold">&#x20B9; ${p.price}</td>
+								<td>${p.firstName}</td>
+								<td>${p.clientmobile}</td>
+								<td>${p.email1}</td>
+								<td>${p.placeofconsultation}</td>
 								<td> <a href="delete/${p.id}"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
 									href="update/${p.id}"><i

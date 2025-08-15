@@ -31,8 +31,12 @@ public class MainController {
 	
 	@RequestMapping("/home")
 	public String viewHome(Model model) {
-		List<Product> product=productDao.getProducts();
-		model.addAttribute("product", product);
+		List<Patients> patients = patientDao.getPatient();
+		model.addAttribute("patients", patients);
+		/*
+		 * List<Product> product=productDao.getProducts(); model.addAttribute("product",
+		 * product);
+		 */	
 		return "home";
 	}
 	
@@ -70,9 +74,18 @@ public class MainController {
 		
 	}
 	
+	/*
+	 * @RequestMapping("/delete/{productId}") public RedirectView
+	 * deleteProduct(@PathVariable("productId") int productId, HttpServletRequest
+	 * request) { this.productDao.deleteProduct(productId); RedirectView
+	 * redirectView = new RedirectView();
+	 * redirectView.setUrl(request.getContextPath() + "/"); return redirectView; }
+	 */
+	
 	@RequestMapping("/delete/{productId}")
 	public RedirectView deleteProduct(@PathVariable("productId") int productId, HttpServletRequest request) {
-		this.productDao.deleteProduct(productId);
+	//	this.productDao.deleteProduct(productId);
+		patientDao.deletePatient(productId);
 		RedirectView redirectView = new RedirectView();
 		redirectView.setUrl(request.getContextPath() + "/");
 		return redirectView;

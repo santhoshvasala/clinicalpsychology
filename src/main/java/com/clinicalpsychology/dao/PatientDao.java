@@ -43,6 +43,20 @@ public class PatientDao {
 	@Transactional
 	public void deletePatient(int pid) {
 		Patients p = this.hibernateTemplate.load(Patients.class, pid);
+		PatientsDetails1 p1 = p.getPatientsDetails1();
+		PatientsDetails2 p2 = p.getPatientsDetails2();
+		if(p2 != null)
+		{
+			p2.setPatientid(null);
+			this.hibernateTemplate.delete(p2);
+		}
+		if(p1 != null)
+		{
+			p1.setPatientid(null);
+			this.hibernateTemplate.delete(p1);
+		}
+		p.setPatientsDetails1(null);
+		p.setPatientsDetails2(null);
 		this.hibernateTemplate.delete(p);
 	}
 	
