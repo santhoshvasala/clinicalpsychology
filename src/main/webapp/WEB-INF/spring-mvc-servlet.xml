@@ -17,6 +17,11 @@
  http://www.springframework.org/schema/mvc
  http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+
+
+	<context:component-scan base-package="jbr.springmvc" />
+	<context:annotation-config />
+
 	<tx:annotation-driven />
 
 	<context:component-scan
@@ -25,6 +30,9 @@
 	<mvc:annotation-driven />
 	<mvc:resources location="/WEB-INF/resources/"
 		mapping="/resources/**" />
+		
+    <bean id="userService" class="com.clinicalpsychology.springmvc.service.UserServiceImpl" />
+  <bean id="userDao" class="com.clinicalpsychology.springmvc.dao.UserDaoImpl" />
 
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
@@ -34,7 +42,10 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
-
+	<bean id="multipartResolver"
+	      class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	    <property name="maxUploadSize" value="10485760"/> <!-- 10MB -->
+	</bean>
 
 	<bean name="ds"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -74,6 +85,8 @@
 				<value>com.clinicalpsychology.model.Purpose</value>
 				<value>com.clinicalpsychology.model.ReferralSource</value>
 				<value>com.clinicalpsychology.model.Religion</value>
+				<value>com.clinicalpsychology.model.Consultant</value>
+				<value>com.clinicalpsychology.model.SessionNotes</value>
 			</list>
 		</property>
 

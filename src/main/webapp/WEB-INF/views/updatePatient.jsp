@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+    pageEncoding="UTF-8" isELIgnored="false" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,33 +13,29 @@
 	<div class="container mt-2 bg-light">
 		<div class="row">
 			<div class="col-md-6 offset-md-3">
-				<h1 class="text-center mb-3 mt-4">Psychological Case Record</h1>
-				<form action="handle-patient" method="post">
+				<h1 class="text-center mb-3 mt-4"> View Psychological Case Record</h1>
+				<form action="${pageContext.request.contextPath}/viewPatient" method="post" >
+				<input type="hidden" value="${patient.id}" name="id"class="form-control" >
 
-
-					<b>Name:</b>&nbsp;&nbsp;<input type="text" id="firstName" name="firstName"
-						>
+					<b>Name:</b>&nbsp;&nbsp;${patient.firstName}
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Date</b> &nbsp;&nbsp;<input type="date"
-						name="createdDate" id="createdDate" />
+						name="createdDate" id="createdDate" value="${patient.createdDate}"/>
 					<div></div>
-					<b>Date of Birth:</b>&nbsp; <input type="date" id="dob" name="dob">&nbsp;&nbsp;&nbsp;<b>Age:</b> &nbsp;
-					<input type="text" id="age" name="age">
+					<b>Date of Birth:</b>&nbsp; <input type="date" id="dob" name="dob" value="${patient.dob}">&nbsp;&nbsp;&nbsp;<b>Age:</b> &nbsp;
+					<input type="text" id="age" name="age" value="${patient.age}">
 					<div></div>
 					<b>Mobile Number:</b> &nbsp;
 					<div></div>
-					Client <input type="text" id="clientmobile" name="clientmobile">
+					Client <input type="text" id="clientmobile" name="clientmobile" value="${patient.clientmobile}">
 					<div></div>
-					Relative: <input type="text" id="relativemobile"
-						name="relativemobile">
+					Relative: <input type="text" id="relativemobile" name="relativemobile" value="${patient.relativemobile}">
 					<div></div>
-					Relationship Type<input type="text" id="relationtype"
-						name="relationtype">
+					Relationship Type<input type="text" id="relationtype" name="relationtype" value="${patient.relationtype}">
 					<div></div>
-					<b>Email ID: 1.</b>&nbsp; <input type="text" id="email1"
-						name="email1">&nbsp; <b>2.</b>&nbsp;<input type="text" 
-						id="email2" name="email2">
+					<b>Email ID: 1.</b>&nbsp; <input type="text" id="email1" name="email1" value=""${patient.email1}">&nbsp; <b>2.</b>&nbsp;<input type="text" 
+						id="email2" name="email2" value="{patient.email2}">
 						<div/>
-						<b> Gender: </b>&nbsp; <select name="gender">
+						<b> Gender: </b>&nbsp; <select name="gender" >
 						<option value="Male">Male</option>
 						<option value="female">Female</option>
 					</select> &nbsp;<b>, Religion:</b> &nbsp;<select name="religion">
@@ -127,7 +123,7 @@
 					of Information: <input type="checkbox"
 						name="patientsDetails1.reliabilityinfo" value="Reliable">Reliable
 					<input type="checkbox" name="patientsDetails1.reliabilityinfo"
-						value="Partially Reliable">Partially Reliable <input
+						value="Partially Reliable" >Partially Reliable <input
 						type="checkbox" name="patientsDetails1.reliabilityinfo"
 						value="Unreliable">Unreliable
 					<div />

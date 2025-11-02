@@ -31,7 +31,10 @@
 								<td>${p.clientmobile}</td>
 								<td>${p.email1}</td>
 								<td>${p.placeofconsultation}</td>
-								<td> <a href="delete/${p.id}"><i
+								<td> 
+								<a href="viewPatient/${p.id}"><i
+										class="fa fa-eye"></i></a
+								<a href="delete/${p.id}"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
 									href="update/${p.id}"><i
 										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a></td>
@@ -39,6 +42,9 @@
 						</c:forEach>
 					</tbody>
 				</table>
+				<div class="container text-center mb-3">
+					<a href="addConsultant" class="btn btn-outline-success"> Add
+						Consultant </a>
 				<div class="container text-center mb-3">
 					<a href="addPatient" class="btn btn-outline-success"> Add
 						Patient </a>
@@ -74,6 +80,11 @@
 				<div class="container text-center mb-3">
 					<a href="addReligion" class="btn btn-outline-success"> Add
 						Religion </a>
+				</div>
+				
+				<div class="container text-center mb-3">
+					<a href="addSessionNotes" class="btn btn-outline-success"> Add
+						Session Notes </a>
 				</div>
 			</div>
 

@@ -1,7 +1,6 @@
 package com.clinicalpsychology.controller;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -97,5 +96,12 @@ public class MainController {
 		Product product = this.productDao.getProduct(pid);
 		model.addAttribute("product", product);
 		return "update_product";
+	}
+	
+	@RequestMapping("/viewPatient/{patientId}")
+	public String viewPatient(@PathVariable("patientId")int pid, Model model) {
+	 Patients patient = patientDao.getPatient(pid);
+		model.addAttribute("patient", patient);
+		return "viewPatient";
 	}
 }
