@@ -12,17 +12,17 @@
 		<div class="row">
 			<div class="col-md-6 offset-md-3">
 				<h1 class="text-center mb-3 mt-3 text-warning">ADD GENDER</h1>
-				<form action="handleGender" method="post">
-
+				<form action="${pageContext.request.contextPath}/handleGender" method="post">
+					<button type="submit" disabled style="display: none" aria-hidden="true"></button>
 					<div class="form-group">
 						<label for="name">Gender: </label> <input type="text"
 							class="form-control" id="gendertype" name="gendertype">
 					</div>
 
 					<div class="container text-center mb-4">
-						<a href="${pageContext.request.contextPath}/"
-							class="btn btn-outline-danger"> Back </a>
-						<button type="submit" class="btn btn-primary">Add Gender</button>
+						<a href="${pageContext.request.contextPath}/homePage"
+							class="btn btn-primary"> HOME </a>
+						<button type="submit" class="btn btn-primary">ADD</button>
 					</div>
 
 				</form>
@@ -39,7 +39,7 @@
 								<td>${p.gendertype}</td>
 								<td> <a href="deleteGender/${p.id}"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
-									href="updateGender/${p.id}"><i
+									href="updateGender/${p.id}" hidden="true"><i
 										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a></td>
 							</tr>
 						</c:forEach>

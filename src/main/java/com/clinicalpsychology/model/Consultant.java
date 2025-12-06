@@ -19,7 +19,7 @@ public class Consultant {
     private String consultantTitle;
     private String consultantFirstName;
     private String consultantLastName;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date consultantDob;
     private String consultantEducation;
     private String consultantDesignation;

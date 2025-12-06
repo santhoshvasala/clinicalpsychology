@@ -1,0 +1,165 @@
+`html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gmail-like Page</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f1f3f4;
+    }
+
+    / Header /
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0;
+    }
+
+    .logo {
+      font-weight: bold;
+      color: #d93025;
+      font-size: 20px;
+    }
+
+    .search-bar {
+      flex: 1;
+      margin: 0 20px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 15px;
+    }
+
+    / Layout /
+    .container {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+
+    / Sidebar /
+    .sidebar {
+      width: 220px;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      padding: 15px;
+    }
+
+    .sidebar button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 20px;
+      background: #d93025;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .sidebar ul li:hover {
+      background: #f1f3f4;
+    }
+
+    / Content /
+    .content {
+      flex: 1;
+      background: #fff;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .email {
+      border-bottom: 1px solid #eee;
+      padding: 12px 0;
+    }
+
+    .email strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .email span {
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">Mail</div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search mail">
+    </div>
+    <div class="header-actions">
+      <div>⚙️ ❓ 👤</div>
+    </div>
+  </header>
+
+  <!-- Layout -->
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <button>Compose</button>
+      <ul>
+        <li>📥 Inbox</li>
+        <li>⭐ Starred</li>
+        <li>📤 Sent</li>
+        <li>📝 Drafts</li>
+        <li>🗑️ Trash</li>
+      </ul>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+      <div class="email">
+        <strong>GitHub</strong>
+        <span>Your repository has a new star!</span>
+      </div>
+      <div class="email">
+        <strong>Bank Alerts</strong>
+        <span>Your statement is ready to download.</span>
+      </div>
+      <div class="email">
+        <strong>Flight Booking</strong>
+        <span>Your itinerary HYD → BLR is confirmed.</span>
+      </div>
+      <div class="email">
+        <strong>Newsletter</strong>
+        <span>7 tips to keep your inbox calm.</span>
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>

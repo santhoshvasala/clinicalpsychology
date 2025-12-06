@@ -33,13 +33,48 @@
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 	crossorigin="anonymous"></script>
 
-<title><c:out value="${title}"> Product Crud App </c:out></title>
+<title><c:out value="${title}"> clinicalpsychology </c:out></title>
 
 <style>
 body {
-    background-image: url('https://c4.wallpaperflare.com/wallpaper/737/958/492/macbook-pro-wallpaper-preview.jpg');
-    background-size: cover;
+   /*  background-image: url('https://c4.wallpaperflare.com/wallpaper/737/958/492/macbook-pro-wallpaper-preview.jpg');
+    */
+     background-size: cover;
     background-repeat: no-repeat;
 }
+.dropbtn {
+  background-color: #04AA6D;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
 </style>
 

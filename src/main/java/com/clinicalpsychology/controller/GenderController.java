@@ -46,15 +46,15 @@ public class GenderController {
 	
 	
 	@RequestMapping("/deleteGender/{id}")
-	public RedirectView deleteProduct(@PathVariable("id") int id, HttpServletRequest request) {
+	public RedirectView deleteGender(@PathVariable("id") int id, HttpServletRequest request) {
 		this.genderDao.deleteGender(id);
 		RedirectView redirectView = new RedirectView();
-		redirectView.setUrl(request.getContextPath() + "/");
+		redirectView.setUrl(request.getContextPath() + "/addGender");
 		return redirectView;
 	}
 	
 	@RequestMapping("/updateGender/{id}")
-	public String updateProduct(@PathVariable("id")int pid, Model model) {
+	public String updateGender(@PathVariable("id")int pid, Model model) {
 		Gender gender = this.genderDao.getGender(pid);
 		model.addAttribute("gender", gender);
 		return "updateGender";

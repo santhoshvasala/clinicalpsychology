@@ -12,17 +12,17 @@
 		<div class="row">
 			<div class="col-md-6 offset-md-3">
 				<h1 class="text-center mb-3 mt-3 text-warning">Add Religion</h1>
-				<form action="handleReligion" method="post">
-
+				<form action="${pageContext.request.contextPath}/handleReligion" method="post">
+                    <button type="submit" disabled style="display: none" aria-hidden="true"></button>
 					<div class="form-group">
 						<label for="name">Religion: </label> <input type="text"
 							class="form-control" id="religionval" name="religionval">
 					</div>
 
 					<div class="container text-center mb-4">
-						<a href="${pageContext.request.contextPath}/"
-							class="btn btn-outline-danger"> Back </a>
-						<button type="submit" class="btn btn-primary">Add Religion</button>
+						<a href="${pageContext.request.contextPath}/homePage"
+							class="btn btn-primary"> HOME </a>
+						<button type="submit" class="btn btn-primary">ADD</button>
 					</div>
 
 				</form>
@@ -40,7 +40,7 @@
 								<td> <a href="deleteReligion/${p.id}"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
 									href="updateReligion/${p.id}"><i
-										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a></td>
+										class="fa-sharp fa-solid fa-pen-to-square text-success" hidden="true"></i></a></td>
 							</tr>
 						</c:forEach>
 					</tbody>

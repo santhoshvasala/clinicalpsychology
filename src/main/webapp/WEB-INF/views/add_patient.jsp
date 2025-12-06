@@ -1,643 +1,872 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+	pageEncoding="UTF-8" isELIgnored="false"%>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+   <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+   <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<style><%@include file="./styles.css"%></style>
-<meta charset="UTF-8">
-<%@include file="./base.jsp"%>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Psychological Case Record</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --ink: #1a1a1a;
+      --muted: #6b7280;
+      --primary: #0f766e;
+      --border: #e5e7eb;
+      --focus: #14b8a6;
+    }
+    html, body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin: 0 0 0.25rem 0;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    form {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    fieldset {
+      border: none;
+      padding: 0;
+      margin: 0 0 1rem 0;
+    }
+    legend {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 0.9rem;
+    }
+    .col-12 { grid-column: span 12; }
+    .col-6  { grid-column: span 6; }
+    .col-4  { grid-column: span 4; }
+    .col-3  { grid-column: span 3; }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.6rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background: #fff;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid var(--focus);
+      outline-offset: 1px;
+      border-color: var(--focus);
+    }
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    a {
+      appearance: none;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #111827;
+      border: 1px solid var(--border);
+    }
+    @media print {
+      .actions { display: none; }
+      .container { margin: 0; max-width: 100%; }
+      form { border: none; padding: 0; }
+    }
+  </style>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+	    const myCheckbox = document.getElementById('chek1');
+
+	    if (myCheckbox) {
+	        myCheckbox.addEventListener('keydown', function(event) {
+	            if (event.key === 'Enter') {
+	                event.preventDefault(); // Prevent the default action (toggling the checkbox)
+	            }
+	        });
+	    }
+	});
+  
+  
+  
+  function calculateAge()
+  {
+	const dob = document.getElementById("dob").value;
+	if(!dob) return;
+	const dobDate = new Date(dob);
+	const today = new Date();
+	let age = today.getFullYear() - dobDate.getFullYear();
+	const monthDiff = today.getMonth()-dobDate.getMonth();
+	if(monthDiff < 0 || (monthDiff === 0 && today.getDate()<dobDate.getDate()))
+	{
+		age--;
+	}
+	document.getElementById("age").value=age;
+}
+  </script>
 </head>
 <body>
+  <div class="container">
+    <header>
+      <h1>Psychological Case Record</h1>
+    </header>
+	<c:if test="${not empty errMessage}">
+    	<div style="color:red;">${errMessage}</div>
+	</c:if>
+	<c:if test="${not empty message}">
+		<div class="alert alert-success">${message}</div>
+	</c:if>
+    <form aria-label="Psychological Case Record" action="handleAddPatient" method="post" id="addPatientForm">
+    <button type="submit" disabled style="display: none" aria-hidden="true"></button>
+      <fieldset>
+        <div class="grid">
+          <div class="col-6">
+            <label for="firstName">Name</label>
+            <input id="firstName" name="firstName" type="text" autocomplete="firstName" required="required" />
+          </div>
+          <div class="col-6">
+            <label for="date">Date</label>
+            <input id="createdDate" name="createdDate" type="datetime-local" required="required"/>
+          </div>
 
-	<div class="container mt-2 bg-light">
-		<div class="row">
-			<div class="col-md-6 offset-md-3">
-				<h1 class="text-center mb-3 mt-4">Psychological Case Record</h1>
-				<form action="handle-patient" method="post">
+          <div class="col-6">
+            <label for="dob">Date of birth</label>
+            <input id="dob" name="dob" type="date" required="required" onchange="calculateAge()"/>
+          </div>
+          <div class="col-6">
+            <label for="age">Age</label>
+            <input id="age" name="age" type="text" readonly/>
+          </div>
+        </div>
+      </fieldset>
 
+      <fieldset>
+        <legend>Contact</legend>
+        <div class="grid">
+          <div class="col-4">
+            <label for="clientmobile">Mobile number (client)</label>
+            <input id="clientmobile" name="clientmobile" type="tel" inputmode="tel" required="required"/>
+          </div>
+          <div class="col-4">
+            <label for="relativemobile">Mobile number (relative)</label>
+            <input id="relativemobile" name="relativemobile" type="tel" inputmode="tel" />
+          </div>
+          <div class="col-4">
+            <label for="relationtype">Relationship type</label>
+            <input id="relationtype" name="relationtype" type="text" />
+          </div>
 
-					<b>Name:</b>&nbsp;&nbsp;<input type="text" id="firstName" name="firstName"
-						>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Date</b> &nbsp;&nbsp;<input type="date"
-						name="createdDate" id="createdDate" />
-					<div></div>
-					<b>Date of Birth:</b>&nbsp; <input type="date" id="dob" name="dob">&nbsp;&nbsp;&nbsp;<b>Age:</b> &nbsp;
-					<input type="text" id="age" name="age">
-					<div></div>
-					<b>Mobile Number:</b> &nbsp;
-					<div></div>
-					Client <input type="text" id="clientmobile" name="clientmobile">
-					<div></div>
-					Relative: <input type="text" id="relativemobile"
-						name="relativemobile">
-					<div></div>
-					Relationship Type<input type="text" id="relationtype"
-						name="relationtype">
-					<div></div>
-					<b>Email ID: 1.</b>&nbsp; <input type="text" id="email1"
-						name="email1">&nbsp; <b>2.</b>&nbsp;<input type="text" 
-						id="email2" name="email2">
-						<div/>
-						<b> Gender: </b>&nbsp; <select name="gender">
-						<option value="Male">Male</option>
-						<option value="female">Female</option>
-					</select> &nbsp;<b>, Religion:</b> &nbsp;<select name="religion">
-						<option value="Hindu">Hindu</option>
-						<option value="Muslim">Muslim</option>
-					</select>&nbsp;<b>,Marital Status: </b> &nbsp;<select name="maritalstatus">
-						<option value="Married">Married</option>
-						<option value="UnMarried">UnMarried</option>
-						<option value="Widow">Widow</option>
-					</select>&nbsp;<b> Educational Qualification: </b>&nbsp; <select name="eduqualification">
-						<option value="10th">10th</option>
-						<option value="Graduate">Graduate</option>
-						<option value="Post Graduate">Post Graduate</option>
-					</select>
-					<div/>
-					<b> Occupation: </b> &nbsp;<select name="occupation">
-						<option value="self employed">self employed</option>
-						<option value="govt job">govt job</option>
-					</select>
-					&nbsp;<b> 
-					<div/>Informants: </b> &nbsp;<input type="text" class="form-control"
-						id="informants" name="informants">
-						<b>Address:</b>   &nbsp;<input
-						type="text" class="form-control" id="address" name="address">
-					<b>Referral Source: </b> &nbsp;<select name="referalsource">
-						<option value="online">online</option>
-						<option value="doctor">doctor</option>
-					</select>&nbsp; <b>Purpose of Referral: </b>  &nbsp;<select name="puposeofreferral">
-						<option value="consultation">consultation</option>
-						<option value="sessions">sessions</option>
-					</select> &nbsp; <div/><b>Place of Consultation: </b> &nbsp;<select name="placeofconsultation">
-						<option value="Hyderabad">Hyderabad</option>
-						<option value="Karimnagar">Karimnagar</option>
-						<option value="Warangal">Warangal</option>
-					</select>
-					<div></div>
+          <div class="col-6">
+            <label for="email1">Email ID 1</label>
+            <input id="email1" name="email1" type="email" autocomplete="email" required="required"/>
+          </div>
+          <div class="col-6">
+            <label for="email2">Email ID 2</label>
+            <input id="email2" name="email2" type="email" autocomplete="email" />
+          </div>
+        </div>
+      </fieldset>
 
-					1.1 Presenting Complaints:<input type="text" class="form-control"
-						id="patientsDetails1.presentingcomplaints"
-						name="patientsDetails1.presentingcomplaints"> 1.2
-					Precipitating Factors: <input type="text" class="form-control"
-						id="patientsDetails1.precipitatingfactors"
-						name="patientsDetails1.precipitatingfactors"> 1.3 Duration
-					of Illness: <input type="text" class="form-control"
-						id="patientsDetails1.dutaionofillness"
-						name="patientsDetails1.dutaionofillness"> Onset: <input
-						type="checkbox" name="patientsDetails1.onset" value="Acute">Acute
-					<input type="checkbox" name="patientsDetails1.onset"
-						value="Insidious">Insidious Course: <input type="checkbox"
-						name="patientsDetails1.course" value="Continuous">Continuous
-					<input type="checkbox" name="patientsDetails1.course"
-						value="Episodic">Episodic 2. Recent Treatment History: <input
-						type="text" class="form-control"
-						id="patientsDetails1.recenttreatmenthistory"
-						name="patientsDetails1.recenttreatmenthistory"> 3.
-					Negative History: <input type="text" class="form-control"
-						id="patientsDetails1.negativehistory"
-						name="patientsDetails1.negativehistory"> 4. Past History
-					of Mental Illness&Physical Illness: <input type="text"
-						class="form-control" id="patientsDetails1.pasthistory"
-						name="patientsDetails1.pasthistory"> 5. Family History: <input
-						type="text" class="form-control"
-						id="patientsDetails1.familyhistory"
-						name="patientsDetails1.familyhistory"> 6.0 Personal
-					History: 6.1 Birth & Developmental – <input type="text"
-						class="form-control" id="patientsDetails1.birthdevelopment"
-						name="patientsDetails1.birthdevelopment"> 6.2 Scholastic –
-					<input type="text" class="form-control"
-						id="patientsDetails1.scholastic"
-						name="patientsDetails1.scholastic"> 6.3 Occupational – <input
-						type="text" class="form-control"
-						id="patientsDetails1.occupational"
-						name="patientsDetails1.occupational"> 6.4 Marital & Sexual
-					– <input type="text" class="form-control"
-						id="patientsDetails1.maritalsexual"
-						name="patientsDetails1.maritalsexual"> 6.5 Habits
-					(including use of alcohol/tobacco/drug, if any) – <input
-						type="text" class="form-control" id="patientsDetails1.habits"
-						name="patientsDetails1.habits"> 6.6 Social – <input
-						type="text" class="form-control" id="patientsDetails1.social"
-						name="patientsDetails1.social"> 7.Personality/Adjustment
-					Prior to Illness: <input type="text" class="form-control"
-						id="patientsDetails1.personalityadjustment"
-						name="patientsDetails1.personalityadjustment"> Reliability
-					of Information: <input type="checkbox"
-						name="patientsDetails1.reliabilityinfo" value="Reliable">Reliable
-					<input type="checkbox" name="patientsDetails1.reliabilityinfo"
-						value="Partially Reliable">Partially Reliable <input
-						type="checkbox" name="patientsDetails1.reliabilityinfo"
-						value="Unreliable">Unreliable
-					<div />
-					Adequacy of Information: <input type="checkbox"
-						name="patientsDetails1.adequacyinfo" value="Adequate">
-					Adequate <input type="checkbox"
-						name="patientsDetails1.adequacyinfo" value="Inadequate">Inadequate
-8. Mental Status:
-8.1 Appearance –
-General build:
-<input type="checkbox"
-						name="patientsDetails2.generalbuild" value="Thin"> Thin 
-						<input type="checkbox"
-						name="patientsDetails2.generalbuild" value="Obese"> Obese
-						<input type="checkbox"
-						name="patientsDetails2.generalbuild" value="well-nourished"> well-nourished
-						<input type="checkbox"
-						name="patientsDetails2.generalbuild" value="frail"> frail
-<div/>
-Grooming & hygiene:
-<input type="checkbox"
-						name="patientsDetails2.grooming" value="Clean"> Clean 
-						<input type="checkbox"
-						name="patientsDetails2.grooming" value="well-groomed"> well-groomed 
-						<input type="checkbox"
-						name="patientsDetails2.grooming" value="disheveled"> disheveled 
-						<input type="checkbox"
-						name="patientsDetails2.grooming" value="neglected"> neglected 
-						<div/>
-						Dress: 
-						<input type="checkbox"
-						name="patientsDetails2.dress" value="Appropriate"> Appropriate 
-						<input type="checkbox"
-						name="patientsDetails2.dress" value="Inappropriate"> Inappropriate 
-						<div/>
-Facial expression: 
-<input type="checkbox"
-						name="patientsDetails2.facialexpression" value="Anxious"> Anxious
-						<input type="checkbox"
-						name="patientsDetails2.facialexpression" value="Sad"> Sad
-						<input type="checkbox"
-						name="patientsDetails2.facialexpression" value="Blunted"> Blunted
-						<input type="checkbox"
-						name="patientsDetails2.facialexpression" value="Suspicious"> Suspicious
-						<input type="checkbox"
-						name="patientsDetails2.facialexpression" value="Smiling inappropriately"> Smiling inappropriately
-						
-<div/>Eye contact: 
-<input type="checkbox"
-						name="patientsDetails2.eycontact" value="Good"> Good
-						<input type="checkbox"
-						name="patientsDetails2.eycontact" value="fleeting"> fleeting
-						<input type="checkbox"
-						name="patientsDetails2.eycontact" value="avoidant"> avoidant
-						<input type="checkbox"
-						name="patientsDetails2.eycontact" value="piercing"> piercing
-<div/>
-Age-appropriateness: piercingAppears stated age or not
-Notable physical features: 
-<input type="checkbox"
-						name="patientsDetails2.notablephysicalfeatures" value="Scars"> Scars
-						<input type="checkbox"
-						name="patientsDetails2.notablephysicalfeatures" value="tattoos"> tattoos
-						<input type="checkbox"
-						name="patientsDetails2.notablephysicalfeatures" value="signs of self-harm"> signs of self-harm
-						<input type="checkbox"
-						name="patientsDetails2.notablephysicalfeatures" value="tremors"> tremors <div/>
-						 
-Posture:
-<input type="checkbox"
-						name="patientsDetails2.posture" value="Upright"> Upright
-						<input type="checkbox"
-						name="patientsDetails2.posture" value="slouched"> slouched
-						<input type="checkbox"
-						name="patientsDetails2.posture" value="tense"> tense
-						<input type="checkbox"
-						name="patientsDetails2.posture" value="rigid"> rigid<div/>
+      <fieldset>
+        <div class="grid">
+          <div class="col-4">
+          <label for="gender">Gender</label>
+            <select name="gender required="required"">
+            <c:forEach items="${genders}" var="gen">
+						<option value="${gen.gendertype}">${gen.gendertype}</option>
+						</c:forEach>
+			</select>
+          </div>
+          <div class="col-4">
+            <label for="religion">Religion</label>
+            <select name="religion" required="required">
+	            <c:forEach items="${religions}" var="rel">
+					<option value="${rel.religionval}">${rel.religionval}</option>
+				</c:forEach>
+			</select>
+          </div>
+          <div class="col-4">
+            <label for="maritalStatus" >Marital status</label>
+            <select name="maritalStatus" required="required">
+          		<c:forEach items="${maritalStatuslist}" var="mstatus">
+						<option value="${mstatus.maritalStatusVal}">${mstatus.maritalStatusVal}</option>
+				</c:forEach>
+			</select>
+          </div>
 
-	8.2 Movement and Behavior–
-Increased activity:
-<input type="checkbox"
-						name="patientsDetails2.increasedactivity" value="Psychomotor agitation"> Psychomotor agitation
-						<input type="checkbox"
-						name="patientsDetails2.increasedactivity" value="Hyperactivity"> Hyperactivity
-						<input type="checkbox"
-						name="patientsDetails2.increasedactivity" value="Akathisia"> Akathisia
-						<input type="checkbox"
-						name="patientsDetails2.increasedactivity" value="Restlessness"> Restlessness
-						<input type="checkbox"
-						name="patientsDetails2.increasedactivity" value="Impulsivity"> Impulsivity
+          <div class="col-6">
+            <label for="eduqualification">Educational qualification</label>
+           		<select name="eduqualification" required="required">
+					<c:forEach items="${educations}" var="educate">
+						<option value="${educate.educationDet}">${educate.educationDet}</option>
+					</c:forEach>
+				</select>
+          </div>
+          <div class="col-6">
+            <label for="occupation">Occupation</label>
+            	<select name="occupation" required="required">
+					<c:forEach items="${occupations}" var="occup">
+						<option value="${occup.occupationDet}">${occup.occupationDet}</option>
+					</c:forEach>
+				</select>
+          </div>
+        </div>
+      </fieldset>
 
-Decreased activity:
-<input type="checkbox"
-						name="patientsDetails2.decreasedactivity" value="Psychomotor retardation"> Psychomotor retardation
-						<input type="checkbox"
-						name="patientsDetails2.decreasedactivity" value="Stupor"> Stupor
-						<input type="checkbox"
-						name="patientsDetails2.decreasedactivity" value="Mutism"> Mutism
-						<input type="checkbox"
-						name="patientsDetails2.decreasedactivity" value="Inertia"> Inertia
-						<input type="checkbox"
-						name="patientsDetails2.decreasedactivity" value="Negativism"> Negativism <div/>
+      <fieldset>
+        <legend>Informants and address</legend>
+        <div class="grid">
+          <div class="col-12">
+            <label for="informants">Informants</label>
+            <textarea id="informants" name="informants" placeholder=""></textarea>
+          </div>
+          <div class="col-12">
+            <label for="address">Address</label>
+            <textarea id="address" name="address" placeholder="Street, city, state, postal code"></textarea>
+          </div>
+        </div>
+      </fieldset>
 
-Abnormal movements:
-<input type="checkbox"
-						name="patientsDetails2.abnormalmovements" value="Catatonia"> Catatonia
-						<input type="checkbox"
-						name="patientsDetails2.abnormalmovements" value="waxy flexibility"> waxy flexibility
-						<input type="checkbox"
-						name="patientsDetails2.abnormalmovements" value="posturing"> posturing
-						<input type="checkbox"
-						name="patientsDetails2.abnormalmovements" value="stereotypy"> stereotypy
-						<input type="checkbox"
-						name="patientsDetails2.abnormalmovements" value="Echopraxia"> Echopraxia
-						<input type="checkbox"
-						name="patientsDetails2.abnormalmovements" value="Tics"> Tics
-						<input type="checkbox"
-						name="patientsDetails2.abnormalmovements" value="Mannerisms"> Mannerisms
-						<input type="checkbox"
-						name="patientsDetails2.abnormalmovements" value="Stereotypies"> Stereotypies
-						<input type="checkbox"
-						name="patientsDetails2.abnormalmovements" value="Automatism"> Automatism
-						<input type="checkbox"
-						name="patientsDetails2.abnormalmovements" value="Compulsions"> Compulsions
-						<input type="checkbox"
-						name="patientsDetails2.abnormalmovements" value="Grimacing"> Grimacing
-						<input type="checkbox"
-						name="patientsDetails2.abnormalmovements" value="Gait disturbances"> Gait disturbances
-<div/>
-8.3 Speech –
-Quantity:
-<input type="checkbox"
-						name="patientsDetails2.quantity" value="Tempo (high/moderate/low)"> Tempo (high/moderate/low)
-						<input type="checkbox"
-						name="patientsDetails2.quantity" value="Volume (high/moderate/ low)"> Volume (high/moderate/ low)
-						<input type="checkbox"
-						name="patientsDetails2.quantity" value="Pressure of speech"> Pressure of speech
-						<input type="checkbox"
-						name="patientsDetails2.quantity" value="Poverty of speech"> Poverty of speech
-						<input type="checkbox"
-						name="patientsDetails2.quantity" value="Mutism"> Mutism
-						<input type="checkbox"
-						name="patientsDetails2.quantity" value="Monosyllabic replies"> Monosyllabic replies
-						<input type="checkbox"
-						name="patientsDetails2.quantity" value="Verbosity"> Verbosity
-
-Rate and rhythm:
-<input type="checkbox"
-						name="patientsDetails2.rateandrhythm" value="Pressured speech"> Pressured speech
-						<input type="checkbox"
-						name="patientsDetails2.rateandrhythm" value="Retardation"> Retardation
-						<input type="checkbox"
-						name="patientsDetails2.rateandrhythm" value="Hesitant speech"> Hesitant speech
-						<input type="checkbox"
-						name="patientsDetails2.rateandrhythm" value="Stuttering / stammering"> Stuttering / stammering
-						<input type="checkbox"
-						name="patientsDetails2.rateandrhythm" value="Cluttering"> Cluttering
-
-Form and structure:
-<input type="checkbox"
-						name="patientsDetails2.formandstructure" value="Neologisms"> Neologisms
-						<input type="checkbox"
-						name="patientsDetails2.formandstructure" value="Talking past the point (Vorbeireden)"> Talking past the point (Vorbeireden)
-						<input type="checkbox"
-						name="patientsDetails2.formandstructure" value="Aphasia (receptive/intermediate/expressive)"> Aphasia (receptive/intermediate/expressive)
-						<input type="checkbox"
-						name="patientsDetails2.formandstructure" value="Word salad"> Word salad
-						<input type="checkbox"
-						name="patientsDetails2.formandstructure" value="Clang associations"> Clang associations
-						<input type="checkbox"
-						name="patientsDetails2.formandstructure" value="Echolalia"> Echolalia
-						<input type="checkbox"
-						name="patientsDetails2.formandstructure" value="Perseveration"> Perseveration
-						<input type="checkbox"
-						name="patientsDetails2.formandstructure" value="Flight of ideas"> Flight of ideas
-						<input type="checkbox"
-						name="patientsDetails2.formandstructure" value="Incoherence"> Incoherence
-						<input type="checkbox"
-						name="patientsDetails2.formandstructure" value="Derailment"> Derailment
-						<input type="checkbox"
-						name="patientsDetails2.formandstructure" value="Cluttering"> Cluttering
-
-8.4 Thought –
-Disorders of stream:
-<input type="checkbox"
-						name="patientsDetails2.disorderofstream" value="Flight of ideas"> Flight of ideas
-						<input type="checkbox"
-						name="patientsDetails2.disorderofstream" value="Thought blocking"> Thought blocking
-						<input type="checkbox"
-						name="patientsDetails2.disorderofstream" value="Inhibited / Slowing of thinking"> Inhibited / Slowing of thinking
-						<input type="checkbox"
-						name="patientsDetails2.disorderofstream" value="Pressure of thought"> Pressure of thought
-						<input type="checkbox"
-						name="patientsDetails2.disorderofstream" value="perseveration"> perseveration<div/>
-Disorders of form:
-<input type="checkbox"
-						name="patientsDetails2.disorderofform" value="Loosening of associations"> Loosening of associations
-						<input type="checkbox"
-						name="patientsDetails2.disorderofform" value="Incoherence"> Incoherence
-						<input type="checkbox"
-						name="patientsDetails2.disorderofform" value="Derailment"> Derailment
-						<input type="checkbox"
-						name="patientsDetails2.disorderofform" value="Circumstantiality"> Circumstantiality
-						<input type="checkbox"
-						name="patientsDetails2.disorderofform" value="Tangentiality"> Tangentiality
-						<input type="checkbox"
-						name="patientsDetails2.disorderofform" value="Perseveration"> Perseveration
-						<input type="checkbox"
-						name="patientsDetails2.disorderofform" value="Verbigeration"> Verbigeration
-						<input type="checkbox"
-						name="patientsDetails2.disorderofform" value="Thought fragmentation"> Thought fragmentation
-	Content of Thought:
-	<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Obsessions& compulsions"> Obsessions& compulsions
-						<input type="text" id="contentofthought "
-						name="contentofthought">
-	<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Thought alienation"> Thought alienation
-						<input type="text" id="thoughtalienation "
-						name="thoughtalienation">
-	<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)"> Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)
-						<input type="text" id="delusionstext"
-						name="delusionstext">
-	<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Overvalued ideas"> Overvalued ideas
-						<input type="text" id="overvaluedideastext"
-						name="overvaluedideastext">
-	<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Phobias"> Phobias
-						<input type="text" id="phobiastext"
-						name="phobiastext">
-	<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Overvalued ideas"> Overvalued ideas
-						<input type="text" id="overvaluedideastext"
-						name="overvaluedideastext">
-	<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Depressive Cognitions (hopelessness, helplessness, worthlessness):"> Depressive Cognitions (hopelessness, helplessness, worthlessness):
-						<input type="text" id="deressivecongnitionstext"
-						name="deressivecongnitionstext">			
-		<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Guilt"> Guilt
-						<input type="text" id="guilttext"
-						name="guilttext">
-		<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Worries"> Worries
-						<input type="text" id="worriestext"
-						name="worriestext">	
-			<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Catastrophic"> Catastrophic
-						<input type="text" id="catastrophictext"
-						name="catastrophictext">	
-		<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Suicidal"> Suicidal
-						<input type="text" id="suicidaltext"
-						name="suicidaltext">	
-		<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="homicidal ideation"> homicidal ideation
-						<input type="text" id="homicidalideationtext"
-						name="homicidalideationtext">	
-		<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Magical thinking"> Magical thinking
-						<input type="text" id="magicalthinkingtext"
-						name="magicalthinkingtext">																																										
-		<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Ideas of reference"> Ideas of reference
-						<input type="text" id="ideasofreferencetext"
-						name="ideasofreferencetext">	
-		<input type="checkbox"
-						name="patientsDetails2.contentofthought" value="Persecutory ideas"> Persecutory ideas
-						<input type="text" id="persecutoryidastext"
-						name="persecutoryidastext">	
-
-
-Possession of Thought:
-<input type="checkbox"
-						name="patientsDetails2.possessionofthought" value="Thought insertion"> Thought insertion
-						<input type="checkbox"
-						name="patientsDetails2.possessionofthought" value="Thought withdrawal"> Thought withdrawal
-						<input type="checkbox"
-						name="patientsDetails2.possessionofthought" value="Thought broadcasting"> Thought broadcasting
-						<input type="checkbox"
-						name="patientsDetails2.possessionofthought" value="Thought echo"> Thought echo
-
-8.5	Mood and Affect –
-Mood (subjective):
-<input type="checkbox"
-						name="patientsDetails2.mood" value="Depressive"> Depressive
-						<input type="checkbox"
-						name="patientsDetails2.mood" value="Elated / euphoric"> Elated / euphoric
-						<input type="checkbox"
-						name="patientsDetails2.mood" value="Anxious"> Thught echo
-						<input type="checkbox"
-						name="patientsDetails2.mood" value="Irritable"> Irritable
-						<input type="checkbox"
-						name="patientsDetails2.mood" value="Apathy"> Apathy
-						<input type="checkbox"
-						name="patientsDetails2.mood" value="Fearful"> Fearful
-						<input type="checkbox"
-						name="patientsDetails2.mood" value="DysphoriaLability"> DysphoriaLability
-
-Affect (objective):
-<input type="checkbox"
-						name="patientsDetails2.affect" value="Blunted"> Blunted
-						<input type="checkbox"
-						name="patientsDetails2.affect" value="Flat"> Flat
-						<input type="checkbox"
-						name="patientsDetails2.affect" value="Inappropriate"> Inappropriate
-						<input type="checkbox"
-						name="patientsDetails2.affect" value="Restricted"> Restricted
-						<input type="checkbox"
-						name="patientsDetails2.affect" value="Labile"> Labile
-						<input type="checkbox"
-						name="patientsDetails2.affect" value="Congruent / incongruent with mood"> Congruent / incongruent with mood
-
-8.7	Perception –
-<input type="checkbox"
-						name="patientsDetails2.perception" value="Auditory Hallucinations"> Auditory Hallucinations
-						<input type="checkbox"
-						name="patientsDetails2.perception" value="Visual Hallucinations"> Visual Hallucinations
-						<input type="checkbox"
-						name="patientsDetails2.perception" value="Olfactory Hallucinations"> Olfactory Hallucinations
-						<input type="checkbox"
-						name="patientsDetails2.perception" value="Gustatory Hallucinations"> Gustatory Hallucinations
-						<input type="checkbox"
-						name="patientsDetails2.perception" value="Tactile Hallucinations"> Tactile Hallucinations
-						<input type="checkbox"
-						name="patientsDetails2.perception" value="Pseudo-hallucinations"> Pseudo-hallucinations
-						<input type="checkbox"
-						name="patientsDetails2.perception" value="Illusions"> Illusions
-						<input type="checkbox"
-						name="patientsDetails2.perception" value="Depersonalization"> Depersonalization
-						<input type="checkbox"
-						name="patientsDetails2.perception" value="Derealization"> Derealization
-						<input type="checkbox"
-						name="patientsDetails2.perception" value="Functional hallucinations/"> Functional hallucinations/
-						<input type="checkbox"
-						name="patientsDetails2.perceptionue="Reflex hallucinations"> Reflex hallucinations
-8.7	Cognition –
-Consciousness:
-<input type="checkbox"
-						name="patientsDetails2.consciousness" value="Alert"> Alert
-						<input type="checkbox"
-						name="patientsDetails2.consciousness" value="Drowsy"> Drowsy
-						<input type="checkbox"
-						name="patientsDetails2.consciousness" value="Stuporous"> Stuporous
-						<input type="checkbox"
-						name="patientsDetails2.consciousness" value="Conscious"> Conscious
-						<input type="checkbox"
-						name="patientsDetails2.consciousness" value="Clouding"> Clouding
-						<input type="checkbox"
-						name="patientsDetails2.consciousness" value="Confusion"> Confusion
-						<input type="checkbox"
-						name="patientsDetails2.consciousness" value="Coma / stupor"> Coma / stupor
-						
-	Orientation:
-Time:	<input type="checkbox"
-						name="patientsDetails2.time" value="Intact">Intact
-						<input type="checkbox"
-						name="patientsDetails2.time" value="Impaired">	Impaired	
-Place:	<input type="checkbox"
-						name="patientsDetails2.place" value="Intact">Intact
-						<input type="checkbox"
-						name="patientsDetails2.place" value="Impaired">	Impaired	
-Person:	<input type="checkbox"
-						name="patientsDetails2.person" value="Intact">Intact
-						<input type="checkbox"
-						name="patientsDetails2.person" value="Impaired">	Impaired	
-
-Attention and concentration:
-<input type="checkbox"
-						name="patientsDetails2.attentionconcentration" value="Adequate">Adequate
-						<input type="checkbox"
-						name="patientsDetails2.attentionconcentration" value="Distractibility">Distractibility
-						<input type="checkbox"
-						name="patientsDetails2.attentionconcentration" value="Impaired concentration">Impaired concentration
-						<input type="checkbox"
-						name="patientsDetails2.attentionconcentration" value="Hypervigilance">Hypervigilance
-
-Memory:
-Immediate:
-<input type="checkbox"
-						name="patientsDetails2.immediate" value="Intact">Intact
-						<input type="checkbox"
-						name="patientsDetails2.immediate" value="Impaired">	Impaired
-Recent:		<input type="checkbox"
-						name="patientsDetails2.recent" value="Intact">Intact
-						<input type="checkbox"
-						name="patientsDetails2.recent" value="Impaired">	Impaired
-Remote:		<input type="checkbox"
-						name="patientsDetails2.remote" value="Intact">Intact
-						<input type="checkbox"
-						name="patientsDetails2.remote" value="Impaired">	Impaired
-Amnesia:	<input type="checkbox"
-						name="patientsDetails2.amnesia" value="Anterograde">Anterograde
-						<input type="checkbox"
-						name="patientsDetails2.amnesia" value="Retrograde">	Retrograde	    
-						
-						<input type="checkbox"
-						name="patientsDetails2.memory" value="Confabulation">Confabulation
-						<input type="checkbox"
-						name="patientsDetails2.memory" value="Paramnesia (déjà vu, jamais vu)">Paramnesia (déjà vu, jamais vu)
-						<input type="checkbox"
-						name="patientsDetails2.memory" value="Hypermnesia">Hypermnesia          
-Thinking:
-<input type="checkbox"
-						name="patientsDetails2.thinking" value="Abstract Level">Abstract Level
-						<input type="checkbox"
-						name="patientsDetails2.thinking" value="Concrete thinking">Concrete thinking
-						<input type="checkbox"
-						name="patientsDetails2.thinking" value="Impaired reasoning">Impaired reasoning
-Emotion:
-<input type="checkbox"
-						name="patientsDetails2.emotion" value="Normal Emotional reactions">Normal Emotional reactions
-						<input type="checkbox"
-						name="patientsDetails2.emotion" value="Abnormal emotional reactions">Abnormal emotional reactions
-						<input type="checkbox"
-						name="patientsDetails2.emotion" value="Abnormal expressions of emotion">Abnormal expressions of emotion
-						<input type="checkbox"
-						name="patientsDetails2.emotion" value="Morbid expressions of emotion">Morbid expressions of emotion
-Judgment:
-Personal:		<input type="checkbox"
-						name="patientsDetails2.judgementpersonal" value="Intact">Intact	<input type="checkbox"
-						name="patientsDetails2.judgementpersonal" value="Impaired">	Impaired 
-Social:		<input type="checkbox"
-						name="patientsDetails2.judgementsocial" value="Intact">Intact
-						<input type="checkbox"
-						name="patientsDetails2.judgementsocial" value="Impaired">	Impaired
-Test:		<input type="checkbox"
-						name="patientsDetails2.judgementtest" value="Intact">Intact	<input type="checkbox"
-						name="patientsDetails2.judgementtest" value="Impaired">	Impaired
-
-8.8	Insight –
-<input type="checkbox"
-						name="patientsDetails2.insight" value="Level 1. Complete denial of illness
-The individual totally denies being ill, even when clear symptoms or dysfunction are present. Common in psychosis or anosognosia.">
-•	Level 1. Complete denial of illness
-The individual totally denies being ill, even when clear symptoms or dysfunction are present. Common in psychosis or anosognosia.
-<input type="checkbox"
-						name="patientsDetails2.insight" value="Level 2. Slight awareness of being sick and needing help, but denying it at the same time
-The person may express minor doubts or complaints but immediately dismisses the idea of needing psychiatric help.">
-•	Level 2. Slight awareness of being sick and needing help, but denying it at the same time
-The person may express minor doubts or complaints but immediately dismisses the idea of needing psychiatric help.
-
-<input type="checkbox"
-						name="patientsDetails2.insight" value="Level 3. Awareness of being sick but blaming it on external factors
-The illness is acknowledged, but the cause is attributed to external stressors, people, or circumstances—e.g., “It’s because of my boss..">
-•	Level 3. Awareness of being sick but blaming it on external factors
-The illness is acknowledged, but the cause is attributed to external stressors, people, or circumstances—e.g., “It’s because of my boss.”
-<input type="checkbox"
-						name="patientsDetails2.insight" value="Level 4. Awareness that illness is due to something unknown in oneself
-The individual admits that the problem may be internal but cannot clearly define or understand what it is.">
-•	Level 4. Awareness that illness is due to something unknown in oneself
-The individual admits that the problem may be internal but cannot clearly define or understand what it is.
-<input type="checkbox"
-						name="patientsDetails2.insight" value="Level 5. Intellectual insight
-Recognizes the illness, its psychological nature, and causes, but this understanding is not integrated into emotional or behavioral change.">
-•	Level 5. Intellectual insight
-Recognizes the illness, its psychological nature, and causes, but this understanding is not integrated into emotional or behavioral change.
-
-<input type="checkbox"
-						name="patientsDetails2.insight" value="Level 6. True emotional insight
-Full recognition and emotional acceptance of the illness, leading to meaningful change in behavior, attitude, and coping mechanisms.">
-•	Level 6. True emotional insight
-Full recognition and emotional acceptance of the illness, leading to meaningful change in behavior, attitude, and coping mechanisms.
-Other Observations on MSE:
-<input type="text"
-						class="form-control" id="patientsDetails2.otherobservations"
-						name="patientsDetails2.otherobservations"> 
-
-9.   Provisional Diagnosis:
-<input type="text"
-						class="form-control" id="patientsDetails2.provisionalDiagnosis"
-						name="patientsDetails2.provisionalDiagnosis"> 
-10. Psychological assessment Conducted:
-<input type="text"
-						class="form-control" id="patientsDetails2.psychologicalassessmentconducted"
-						name="patientsDetails2.psychologicalassessmentconducted"> 
-11. Psychological Report:
-<input type="text"
-						class="form-control" id="patientsDetails2.psychologicalreport"
-						name="patientsDetails2.psychologicalreport"> 
-11. Management Plan:
-<input type="text"
-						class="form-control" id="patientsDetails2.managementplan"
-						name="patientsDetails2.managementplan"> 
-					
-
-					<!-- <div class="form-group">
-						<select name="Gender">
-							<option value="Male">Male</option>
-							<option value="female">Female</option>
-						</select>
-					</div>
-					<div class="form-group">
-						<label for="Options"> Product Description: </label> 
-						<input type="checkbox" name="selecteditems" value="3 months" title="3 months"> 3 Months
-						<input type="checkbox" name="selecteditems" value="6 months"
-							title="6 Months" > 6 Months
-					</div> -->
-					<div class="container text-center mb-4">
-						<a href="${pageContext.request.contextPath}/"
-							class="btn btn-outline-danger"> Back </a>
-						<button type="submit" class="btn btn-primary">Add Patient</button>
-					</div>
-
-				</form>
+      <fieldset>
+        <legend>Referral</legend>
+        <div class="grid">
+          <div class="col-6">
+            <label for="referalsource">Referral source</label>
+            <select name="referalsource">
+				<c:forEach items="${referrels}" var="reff">
+		 		   <option value="${reff.referralSourceVal}">${reff.referralSourceVal}</option>
+		    	</c:forEach>
+		    </select>
+          </div>
+          <div class="col-6">
+            <label for="placeofconsultation">Place of consultation</label>
+            <select name="placeofconsultation">
+				<c:forEach items="${places}" var="placelist">
+					<option value="${placelist.consPlace}">${placelist.consPlace}</option>
+				</c:forEach>
+			</select>
+          </div>
+          <div class="col-12">
+            <label for="puposeofreferral">Purpose of referral</label>
+            <select name="puposeofreferral">
+				<c:forEach items="${purposelist}" var="purp">
+					<option value="${purp.purposeVal}">${purp.purposeVal}</option>
+				</c:forEach>
+			</select>
+          </div>
+        </div>
+      </fieldset>
+      <fieldset>
+       <div class="grid"> 
+            <div class="col-12">
+	            <label for="patientsDetails1.presentingcomplaints">1.1 Presenting Complaints:</label>
+	            <textarea id="patientsDetails1.presentingcomplaints" name="patientsDetails1.presentingcomplaints" placeholder=""></textarea>
+          	</div>
+          	<div class="col-12">
+	            <label for="patientsDetails1.precipitatingfactors">1.2 Precipitating Factors: </label>
+	            <textarea id="patientsDetails1.precipitatingfactors" name="patientsDetails1.precipitatingfactors" placeholder=""></textarea>
+          	</div>
+          	<div class="col-12">
+	            <label for="patientsDetails1.dutaionofillness">1.3 Duration	of Illness: </label>
+	            <textarea id="patientsDetails1.dutaionofillness" name="patientsDetails1.dutaionofillness" placeholder=""></textarea>
+          	</div>
+          	<div class="col-6">
+	            <label>Onset:</label>
+	        </div>
+	             <input type="checkbox" id="chek1" name="patientsDetails1.onset" value="Acute">Acute
+	             <input type="checkbox" id="chek2" name="patientsDetails1.onset" value="Insidious">Insidious
+	        <div class="col-6">
+	            <label>Course: </label>
+	        </div>   
+	             <input type="checkbox" name="patientsDetails1.course" value="Continuous">Continuous
+				 <input type="checkbox" name="patientsDetails1.course" value="Episodic">Episodic
+      		<div class="col-12">
+	            <label for="patientsDetails1.recenttreatmenthistory">2. Recent Treatment History: </label>
+	            <textarea id="patientsDetails1.recenttreatmenthistory" name="patientsDetails1.recenttreatmenthistory" placeholder=""></textarea>
+          	</div>
+          	<div class="col-12">
+	            <label for="patientsDetails1.negativehistory">3. Negative History: </label>
+	            <textarea id="patientsDetails1.negativehistory" name="patientsDetails1.negativehistory" placeholder=""></textarea>
+          	</div>
+          	<div class="col-12">
+	            <label for="patientsDetails1.pasthistory">4. Past History of Mental Illness & Physical Illness:</label>
+	            <textarea id="patientsDetails1.pasthistory" name="patientsDetails1.pasthistory" placeholder=""></textarea>
+          	</div>
+          	<div class="col-12">
+	            <label for="patientsDetails1.familyhistory">5. Family History:</label>
+	            <textarea id="patientsDetails1.familyhistory" name="patientsDetails1.familyhistory" placeholder=""></textarea>
+          	</div>
+          	<div class="col-12">
+	            <label>6.0 Personal History: </label>
+	             <label for="patientsDetails1.birthdevelopment">6.1 Birth & Developmental –</label>
+	            <textarea id="patientsDetails1.birthdevelopment" name="patientsDetails1.birthdevelopment" placeholder=""></textarea>
+          	</div>
+			<div class="col-12">
+	            <label for="patientsDetails1.scholastic">6.2 Scholastic –</label>
+	            <textarea id="patientsDetails1.scholastic" name="patientsDetails1.scholastic" placeholder=""></textarea>
+          	</div>	
+          	<div class="col-12">
+	            <label for="patientsDetails1.occupational">6.3 Occupational –</label>
+	            <textarea id="patientsDetails1.occupational" name="patientsDetails1.occupational" placeholder=""></textarea>
+          	</div>	
+          	<div class="col-12">
+	            <label for="patientsDetails1.maritalsexual">6.4 Marital & Sexual	–</label>
+	            <textarea id="patientsDetails1.maritalsexual" name="patientsDetails1.maritalsexual" placeholder=""></textarea>
+          	</div>	
+          	<div class="col-12">
+	            <label for="patientsDetails1.habits"> 6.5 Habits (including use of alcohol/tobacco/drug, if any) –</label>
+	            <textarea id="patientsDetails1.habits" name="patientsDetails1.habits" placeholder=""></textarea>
+          	</div>
+          	<div class="col-12">
+	            <label for="patientsDetails1.social"> 6.6 Social –</label>
+	            <textarea id="patientsDetails1.social" name="patientsDetails1.social" placeholder=""></textarea>
+          	</div>
+          	<div class="col-12">
+	            <label for="patientsDetails1.personalityadjustment"> 7.Personality/Adjustment Prior to Illness:</label>
+	            <textarea id="patientsDetails1.personalityadjustment" name="patientsDetails1.personalityadjustment" placeholder=""></textarea>
+          	</div>	
+          	<div class="col-4">
+	            <label> Reliability of Information:</label>
+	        </div>	
+	        
+	             <input type="checkbox" name="patientsDetails1.reliabilityinfo" value="Reliable">Reliable
+				 <input type="checkbox" name="patientsDetails1.reliabilityinfo" value="Partially Reliable"> <label style="white-space: nowrap;font-weight: normal !important;">Partially Reliable</label>
+				 <input type="checkbox" name="patientsDetails1.reliabilityinfo"	value="Unreliable">Unreliable
+          	
+          	<div class="col-4">
+	            <label> Adequacy of Information: </label>
+	        </div>	
+	             <input type="checkbox" name="patientsDetails1.adequacyinfo" value="Adequate">Adequate
+	             <input type="checkbox" name="patientsDetails1.adequacyinfo" value="Inadequate">Inadequate
+          	
+      </div>
+      </fieldset>
+      <fieldset>
+       <legend>8. Mental Status:</legend>
+       <legend>8.1 Appearance –</legend>
+      <div class="grid"> 
+     		 <div class="col-3" style="white-space: nowrap;">
+	            <label for="patientsDetails2.generalbuild"> General build: </label>
+	         
+	          <div>   <input type="checkbox" name="patientsDetails2.generalbuild" value="Thin" style="white-space: nowrap;">Thin </div>	
+			<div>	 <input type="checkbox" name="patientsDetails2.generalbuild" value="Obese" style="white-space: nowrap;">Obese </div>	 
+	         <div>    <input type="checkbox" name="patientsDetails2.generalbuild" value="well nourished" style="white-space: nowrap;">well nourished</div>	
+			<div>	 <input type="checkbox"	name="patientsDetails2.generalbuild" value="frail" style="white-space: nowrap;"> frail </div>	
 			</div>
-		</div>
-	</div>
-
+		</div>	 
+        <div class="grid">   	
+          	<div class="col-3" style="white-space: nowrap;">
+	            <label for="patientsDetails2.grooming"> Grooming & hygiene: </label>
+	            <div> <input type="checkbox" name="patientsDetails2.grooming" value="Clean"> Clean </div>
+				<div> <input type="checkbox" name="patientsDetails2.grooming" value="well-groomed"> well groomed </div>
+				<div> <input type="checkbox" name="patientsDetails2.grooming" value="disheveled"> disheveled </div>
+				<div> <input type="checkbox" name="patientsDetails2.grooming" value="neglected"> neglected </div>
+				 </div>
+				 
+				 </div>	
+				 <div class="grid"> 
+          	<div class="col-3" style="white-space: nowrap;">
+	            <label for="patientsDetails2.dress"> Dress: </label>
+	            <div> <input type="checkbox" name="patientsDetails2.dress" value="Appropriate" style="white-space: nowrap;"> Appropriate </div>
+				<div> <input type="checkbox" name="patientsDetails2.dress" value="Inappropriate" style="white-space: nowrap;"> Inappropriate  </div>
+          	</div>
+          	</div>
+          	<div class="grid"> 
+          	<div class="col-3" style="white-space: nowrap;">
+	            <label for="patientsDetails2.facialexpression"> Facial expression:  </label>
+	            <div>  <input type="checkbox"	name="patientsDetails2.facialexpression" value="Calm"> Calm  </div>
+	           <div>  <input type="checkbox"	name="patientsDetails2.facialexpression" value="Anxious"> Anxious  </div>
+			   <div> <input type="checkbox"	name="patientsDetails2.facialexpression" value="Sad"> Sad  </div> 
+				<div> <input type="checkbox" name="patientsDetails2.facialexpression" value="Blunted"> Blunted  </div>
+			<div>	 <input type="checkbox"	name="patientsDetails2.facialexpression" value="Suspicious"> Suspicious  </div>
+			<div>	 <input type="checkbox"	name="patientsDetails2.facialexpression" value="Smiling inappropriately"> Smiling inappropriately  </div>
+			</div>
+			</div>
+          	<div class="grid"> 
+			<div class="col-3" style="white-space: nowrap;">
+	            <label for="patientsDetails2.eycontact">Eye contact: </label>
+				  <div><input type="checkbox" name="patientsDetails2.eycontact" value="Good"> Good </div>
+				  <div><input type="checkbox" name="patientsDetails2.eycontact" value="fleeting"> fleeting </div>
+				  <div><input type="checkbox" name="patientsDetails2.eycontact" value="avoidant"> avoidant </div>
+				  <div><input type="checkbox" name="patientsDetails2.eycontact" value="piercing"> piercing </div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+	            <label for="patientsDetails2.notablephysicalfeatures">Notable physical marks:  </label>
+	            <div><input type="checkbox" name="patientsDetails2.notablephysicalfeatures" value="Nil"> Nil </div>
+				  <div><input type="checkbox" name="patientsDetails2.notablephysicalfeatures" value="Scars"> Scars </div>
+			   	  <div><input type="checkbox" name="patientsDetails2.notablephysicalfeatures" value="tattoos"> tattoos </div>
+				  <div><input type="checkbox" name="patientsDetails2.notablephysicalfeatures" value="signs of self-harm/cuts"> signs of self-harm/cuts </div>
+				  <div><input type="checkbox" name="patientsDetails2.notablephysicalfeatures" value="tremors"> tremors </div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+	            <label for="patientsDetails2.posture">Posture:  </label>
+				 <div><input type="checkbox" name="patientsDetails2.posture" value="Upright"> Upright</div>
+				 <div><input type="checkbox" name="patientsDetails2.posture" value="slouched"> slouched</div>
+				 <div><input type="checkbox" name="patientsDetails2.posture" value="tense"> tense</div>
+				 <div><input type="checkbox" name="patientsDetails2.posture" value="rigid"> rigid</div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label>8.2 Movement and Behavior– </label>
+				<label for="patientsDetails2.increasedactivity">Increased activity:  </label>
+				<div><input type="checkbox" name="patientsDetails2.increasedactivity" value="Nil"> Nil</div>
+				<div><input type="checkbox" name="patientsDetails2.increasedactivity" value="Psychomotor agitation"> Psychomotor agitation</div>
+				<div><input type="checkbox" name="patientsDetails2.increasedactivity" value="Hyperactivity"> Hyperactivity</div>
+				<div><input type="checkbox" name="patientsDetails2.increasedactivity" value="Akathisia"> Akathisia</div>
+				<div><input type="checkbox" name="patientsDetails2.increasedactivity" value="Restlessness"> Restlessness</div>
+				<div><input type="checkbox" name="patientsDetails2.increasedactivity" value="Impulsivity"> Impulsivity</div>
+			</div>
+			</div>		
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label for="patientsDetails2.decreasedactivity">Decreased activity:  </label>
+				<div><input type="checkbox" name="patientsDetails2.decreasedactivity" value="Nil"> Nil</div>
+				<div><input type="checkbox" name="patientsDetails2.decreasedactivity" value="Psychomotor retardation"> Psychomotor retardation</div>
+				<div><input type="checkbox" name="patientsDetails2.decreasedactivity" value="Stupor"> Stupor</div>
+				<div><input type="checkbox" name="patientsDetails2.decreasedactivity" value="Mutism"> Mutism</div>
+				<div><input type="checkbox" name="patientsDetails2.decreasedactivity" value="Inertia"> Inertia</div>
+				<div><input type="checkbox" name="patientsDetails2.decreasedactivity" value="Negativism"> Negativism </div>
+			</div>
+			</div>	
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label for="patientsDetails2.abnormalmovements">Abnormal movements:  </label>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="Nil"> Nil</div>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="Catatonia"> Catatonia </div>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="waxy flexibility"> waxy flexibility</div>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="posturing"> posturing</div>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="stereotypy"> stereotypy</div>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="Echopraxia"> Echopraxia</div>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="Tics"> Tics</div>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="Mannerisms"> Mannerisms</div>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="Stereotypies"> Stereotypies</div>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="Automatism"> Automatism</div>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="Compulsions"> Compulsions</div>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="Grimacing"> Grimacing</div>
+				<div><input type="checkbox" name="patientsDetails2.abnormalmovements" value="Gait disturbances"> Gait disturbances  </div>
+			</div>
+			</div>	
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label>8.3 Speech –  </label>	
+				<label for="patientsDetails2.quantity">Quantity: </label>	  
+				<div><input type="checkbox" name="patientsDetails2.quantity" value="Tempo (high/moderate/low)"> Tempo
+					  <input type="radio" name="patientsDetails2.quantityTempo" value="high">high
+					  <input type="radio" name="patientsDetails2.quantityTempo" value="moderate">moderate
+					  <input type="radio" name="patientsDetails2.quantityTempo" value="low">low
+				</div>
+				<div><input type="checkbox" name="patientsDetails2.quantity" value="Volume (high/moderate/ low)"> Volume
+				 	  <input type="radio" name="patientsDetails2.quantityValume" value="high">high
+					  <input type="radio" name="patientsDetails2.quantityValume" value="moderate">moderate
+					  <input type="radio" name="patientsDetails2.quantityValume" value="low">low
+				
+				</div>
+				<div><input type="checkbox" name="patientsDetails2.quantity" value="Pressure of speech"> Pressure of speech</div>
+				<div><input type="checkbox" name="patientsDetails2.quantity" value="Poverty of speech"> Poverty of speech</div>
+				<div><input type="checkbox" name="patientsDetails2.quantity" value="Mutism"> Mutism</div>
+				<div><input type="checkbox" name="patientsDetails2.quantity" value="Monosyllabic replies"> Monosyllabic replies</div>
+				<div><input type="checkbox" name="patientsDetails2.quantity" value="Verbosity"> Verbosity  </div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label for="patientsDetails2.rateandrhythm">Rate and rhythm: </label>
+				<div><input type="checkbox" name="patientsDetails2.rateandrhythm" value="Nil">Nil</div>
+				<div><input type="checkbox" name="patientsDetails2.rateandrhythm" value="Pressured speech"> Pressured speech</div>
+				<div><input type="checkbox" name="patientsDetails2.rateandrhythm" value="Retardation"> Retardation</div>
+				<div><input type="checkbox" name="patientsDetails2.rateandrhythm" value="Hesitant speech"> Hesitant speech</div>
+				<div><input type="checkbox" name="patientsDetails2.rateandrhythm" value="Stuttering / stammering"> Stuttering / stammering</div>
+				<div><input type="checkbox" name="patientsDetails2.rateandrhythm" value="Cluttering"> Cluttering  </div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label for="patientsDetails2.formandstructure">Form and structure: </label>
+				<div><input type="checkbox" name="patientsDetails2.formandstructure" value="Nil">Nil</div>
+				<div><input type="checkbox" name="patientsDetails2.formandstructure" value="Neologisms"> Neologisms</div>
+				<div><input type="checkbox" name="patientsDetails2.formandstructure" value="Talking past the point (Vorbeireden)"> Talking past the point (Vorbeireden)</div>
+				<div><input type="checkbox" name="patientsDetails2.formandstructure" value="Aphasia (receptive/intermediate/expressive)"> Aphasia (receptive/intermediate/expressive)
+				<input type="text" name="patientsDetails2.aphasiaText" value="">
+				
+				</div>
+				<div><input type="checkbox" name="patientsDetails2.formandstructure" value="Word salad"> Word salad</div>
+				<div><input type="checkbox" name="patientsDetails2.formandstructure" value="Clang associations"> Clang associations</div>
+				<div><input type="checkbox" name="patientsDetails2.formandstructure" value="Echolalia"> Echolalia</div>
+				<div><input type="checkbox" name="patientsDetails2.formandstructure" value="Perseveration"> Perseveration</div>
+				<div><input type="checkbox" name="patientsDetails2.formandstructure" value="Flight of ideas"> Flight of ideas</div>
+				<div><input type="checkbox" name="patientsDetails2.formandstructure" value="Incoherence"> Incoherence</div>
+				<div><input type="checkbox" name="patientsDetails2.formandstructure" value="Derailment"> Derailment</div>
+				<div><input type="checkbox" name="patientsDetails2.formandstructure" value="Cluttering"> Cluttering</div>  
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label>8.4 Thought –  </label>
+				<label for="patientsDetails2.disorderofstream">Disorders of stream: </label>
+				<div><input type="checkbox" name="patientsDetails2.disorderofstream" value="Nil">Nil</div> 
+				<div><input type="checkbox" name="patientsDetails2.disorderofstream" value="Flight of ideas"> Flight of ideas</div>
+				<div><input type="checkbox" name="patientsDetails2.disorderofstream" value="Thought blocking"> Thought blocking</div>
+				<div><input type="checkbox" name="patientsDetails2.disorderofstream" value="Inhibited / Slowing of thinking"> Inhibited / Slowing of thinking</div>
+				<div><input type="checkbox" name="patientsDetails2.disorderofstream" value="Pressure of thought"> Pressure of thought</div>
+				<div><input type="checkbox" name="patientsDetails2.disorderofstream" value="perseveration"> perseveration  </div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label for="patientsDetails2.disorderofform">Disorders of form: </label>
+				<div><input type="checkbox" name="patientsDetails2.disorderofform" value="Nil">Nil</div>
+				<div><input type="checkbox" name="patientsDetails2.disorderofform" value="Loosening of associations"> Loosening of associations</div>
+				<div><input type="checkbox" name="patientsDetails2.disorderofform" value="Incoherence"> Incoherence</div>
+				<div><input type="checkbox" name="patientsDetails2.disorderofform" value="Derailment"> Derailment</div>
+				<div><input type="checkbox" name="patientsDetails2.disorderofform" value="Circumstantiality"> Circumstantiality</div>
+				<div><input type="checkbox" name="patientsDetails2.disorderofform" value="Tangentiality"> Tangentiality</div>
+				<div><input type="checkbox" name="patientsDetails2.disorderofform" value="Perseveration"> Perseveration</div>
+				<div><input type="checkbox" name="patientsDetails2.disorderofform" value="Verbigeration"> Verbigeration</div>
+				<div><input type="checkbox" name="patientsDetails2.disorderofform" value="Thought fragmentation"> Thought fragmentation  </div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label for="patientsDetails2.contentofthought">Content of Thought:</label>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Obsessions& compulsions"> Obsessions& compulsions
+				<input type="text" id="contentofthought" name="contentofthought"> </div>
+				
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Thought alienation"> Thought alienation
+				<input type="text" id="thoughtalienation"  name="thoughtalienation"> </div>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)"> Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)
+				<input type="text" id="delusionstext" name="delusionstext">  </div>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Overvalued ideas"> Overvalued ideas
+				<input type="text" id="overvaluedideastext" name="overvaluedideastext">  </div>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Phobias"> Phobias
+				<input type="text" id="phobiastext" name="phobiastext"> </div>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Overvalued ideas"> Overvalued ideas
+				<input type="text" id="overvaluedideastext" name="overvaluedideastext"> </div>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Depressive Cognitions (hopelessness, helplessness, worthlessness):"> Depressive Cognitions (hopelessness, helplessness, worthlessness):
+				<input type="text" id="deressivecongnitionstext" name="deressivecongnitionstext">		 </div>	
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Guilt"> Guilt
+				<input type="text" id="guilttext" name="guilttext"> </div>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Worries"> Worries
+				<input type="text" id="worriestext" name="worriestext">	 </div>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Catastrophic"> Catastrophic
+				<input type="text" id="catastrophictext" name="catastrophictext">	</div>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Suicidal"> Suicidal
+				<input type="text" id="suicidaltext" name="suicidaltext">	 </div>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="homicidal ideation"> homicidal ideation
+				<input type="text" id="homicidalideationtext" name="homicidalideationtext">	 </div>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Magical thinking"> Magical thinking
+				<input type="text" id="magicalthinkingtext" name="magicalthinkingtext">		</div>																																							
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Ideas of reference"> Ideas of reference
+				<input type="text" id="ideasofreferencetext" name="ideasofreferencetext">	</div>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Persecutory ideas"> Persecutory ideas
+				<input type="text" id="persecutoryidastext" name="persecutoryidastext">	 </div>
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Others"> Others
+				<input type="text" id="persecutoryidastext" name="othersText">	 </div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label for="patientsDetails2.possessionofthought">Possession of Thought:</label>
+				<div><input type="checkbox" name="patientsDetails2.possessionofthought" value="Nil"> Nil </div>
+				 <div><input type="checkbox" name="patientsDetails2.possessionofthought" value="Thought insertion"> Thought insertion </div>
+				 <div><input type="checkbox" name="patientsDetails2.possessionofthought" value="Thought withdrawal"> Thought withdrawal</div>
+				 <div><input type="checkbox" name="patientsDetails2.possessionofthought" value="Thought broadcasting"> Thought broadcasting </div>
+				 <div><input type="checkbox" name="patientsDetails2.possessionofthought" value="Thought echo"> Thought echo </div>
+		 	</div>
+		 	</div>
+		 	<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+		 		<label>8.5	Mood and Affect –</label>
+				<label for="patientsDetails2.mood">Mood (subjective):</label>
+				<div><input type="checkbox" name="patientsDetails2.mood" value="Depressive"> Depressive </div>
+				<div><input type="checkbox" name="patientsDetails2.mood" value="Elated / euphoric"> Elated / euphoric </div>
+				<div><input type="checkbox" name="patientsDetails2.mood" value="Anxious"> Anxious </div>
+				<div><input type="checkbox" name="patientsDetails2.mood" value="Irritable"> Irritable </div>
+				<div><input type="checkbox" name="patientsDetails2.mood" value="Apathy"> Apathy </div>
+				<div><input type="checkbox" name="patientsDetails2.mood" value="Fearful"> Fearful </div>
+				<div><input type="checkbox" name="patientsDetails2.mood" value="Dysphoria"> Dysphoria</div>
+				<div><input type="checkbox" name="patientsDetails2.mood" value="Lability"> Lability</div>
+				<div><input type="checkbox" name="patientsDetails2.mood" value="Euthymic"> euthymic</div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label for="patientsDetails2.affect">Affect (objective):</label>
+				<div><input type="checkbox" name="patientsDetails2.affect" value="Blunted"> Blunted </div>
+				<div><input type="checkbox" name="patientsDetails2.affect" value="Flat"> Flat</div>
+				<div><input type="checkbox" name="patientsDetails2.affect" value="Inappropriate"> Inappropriate </div>
+				<div><input type="checkbox" name="patientsDetails2.affect" value="Restricted"> Restricted </div>
+				<div><input type="checkbox" name="patientsDetails2.affect" value="Labile"> Labile </div>
+				<div><input type="checkbox" name="patientsDetails2.affect" value="Congruent / incongruent with mood"> Congruent / incongruent with mood </div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label for="patientsDetails2.perception">8.7	Perception – </label>
+				<div><input type="checkbox" name="patientsDetails2.perception" value="Auditory Hallucinations"> Auditory Hallucinations </div>
+				<div><input type="checkbox" name="patientsDetails2.perception" value="Visual Hallucinations"> Visual Hallucinations </div>
+				<div><input type="checkbox" name="patientsDetails2.perception" value="Olfactory Hallucinations"> Olfactory Hallucinations </div>
+				<div><input type="checkbox" name="patientsDetails2.perception" value="Gustatory Hallucinations"> Gustatory Hallucinations </div>
+				<div><input type="checkbox" name="patientsDetails2.perception" value="Tactile Hallucinations"> Tactile Hallucinations </div>
+				<div><input type="checkbox" name="patientsDetails2.perception" value="Pseudo-hallucinations"> Pseudo-hallucinations </div>
+				<div><input type="checkbox" name="patientsDetails2.perception" value="Illusions"> Illusions</div>
+				<div><input type="checkbox" name="patientsDetails2.perception" value="Depersonalization"> Depersonalization </div>
+				<div><input type="checkbox" name="patientsDetails2.perception" value="Derealization"> Derealization </div>
+				<div><input type="checkbox" name="patientsDetails2.perception" value="Functional hallucinations/"> Functional hallucinations/ </div>
+				<div><input type="checkbox" name="patientsDetails2.perception" value="Reflex hallucinations"> Reflex hallucinations </div>
+				<div><input type="checkbox" name="patientsDetails2.perception" value="Nil"> Nil </div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label>8.7	Cognition –</label>
+				<label for="patientsDetails2.consciousness">Consciousness: </label>
+				<div><input type="checkbox" name="patientsDetails2.consciousness" value="Alert"> Alert </div>
+				<div><input type="checkbox" name="patientsDetails2.consciousness" value="Drowsy"> Drowsy </div>
+				<div><input type="checkbox" name="patientsDetails2.consciousness" value="Stuporous"> Stuporous </div>
+				<div><input type="checkbox" name="patientsDetails2.consciousness" value="Conscious"> Conscious </div>
+				<div><input type="checkbox" name="patientsDetails2.consciousness" value="Clouding"> Clouding </div>
+				<div><input type="checkbox" name="patientsDetails2.consciousness" value="Confusion"> Confusion </div>
+				<div><input type="checkbox" name="patientsDetails2.consciousness" value="Coma / stupor"> Coma / stupor </div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-12">
+				<label>Orientation:  </label>
+				<table>
+					<tr style="width: 758px; height: 25px; ">
+							<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Time: </b></td>
+							<td style="width: 231px; height: 25px"><input type="checkbox" name="patientsDetails2.time" value="Intact" style="width: 45px; ">Intact</td>
+							<td style="width: 322px; height: 25px"><input type="checkbox" name="patientsDetails2.time" value="Impaired" style="width: 45px; ">Impaired</td>
+					</tr>
+					
+					<tr style="width: 758px; height: 25px; ">
+							<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Place  :	 </b></td>
+							<td style="width: 231px; height: 25px"><input type="checkbox" name="patientsDetails2.place" value="Intact" style="width: 45px; ">Intact</td>
+							<td style="width: 322px; height: 25px"><input type="checkbox" name="patientsDetails2.place" value="Impaired" style="width: 45px; ">Impaired</td>
+					</tr>
+					<tr style="width: 758px; height: 25px; ">
+							<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Person    :	</b></td>  
+							<td style="width: 231px; height: 25px"><input type="checkbox" name="patientsDetails2.person" value="Intact" style="width: 45px; ">Intact</td>
+							<td style="width: 322px; height: 25px"><input type="checkbox" name="patientsDetails2.person" value="Impaired" style="width: 45px; ">Impaired</td>
+					</tr>
+				</table>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label for="patientsDetails2.attentionconcentration">Attention and concentration: </label>
+				<div><input type="checkbox" name="patientsDetails2.attentionconcentration" value="Adequate">Adequate </div>
+				<div><input type="checkbox" name="patientsDetails2.attentionconcentration" value="Distractibility">Distractibility </div>
+				<div><input type="checkbox" name="patientsDetails2.attentionconcentration" value="Impaired concentration">Impaired concentration </div>
+				<div><input type="checkbox" name="patientsDetails2.attentionconcentration" value="Hypervigilance">Hypervigilance </div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-12">
+				<label>Memory: </label>
+				<table>
+					<tr style="width: 758px; height: 25px; ">
+							<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Immediate: </b></td>
+							<td style="width: 231px; height: 25px"><input type="checkbox" name="patientsDetails2.immediate" value="Intact" style="width: 45px; ">Intact</td>
+							<td style="width: 322px; height: 25px"><input type="checkbox" name="patientsDetails2.immediate" value="Impaired" style="width: 45px; ">Impaired</td>
+					</tr>
+					
+					<tr style="width: 758px; height: 25px; ">
+							<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Recent  :	 </b></td>
+							<td style="width: 231px; height: 25px"><input type="checkbox" name="patientsDetails2.recent" value="Intact" style="width: 45px; ">Intact</td>
+							<td style="width: 322px; height: 25px"><input type="checkbox" name="patientsDetails2.recent" value="Impaired" style="width: 45px; ">Impaired</td>
+					</tr>
+					<tr style="width: 758px; height: 25px; ">
+							<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Remote    :	</b></td>  
+							<td style="width: 231px; height: 25px"><input type="checkbox" name="patientsDetails2.remote" value="Intact" style="width: 45px; ">Intact</td>
+							<td style="width: 322px; height: 25px"><input type="checkbox" name="patientsDetails2.remote" value="Impaired" style="width: 45px; ">Impaired</td>
+					</tr>
+					<tr style="width: 758px; height: 25px; ">
+							<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Amnesia    :	</b></td>  
+							<td style="width: 231px; height: 25px"><input type="checkbox" name="patientsDetails2.amnesia" value="Anterograde" style="width: 45px; ">Anterograde</td>
+							<td style="width: 322px; height: 25px"><input type="checkbox" name="patientsDetails2.amnesia" value="Retrograde" style="width: 45px; ">Retrograde</td>
+					</tr>
+				</table>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+			 	<div><input type="checkbox" name="patientsDetails2.memory" value="Confabulation">Confabulation </div>
+				<div><input type="checkbox" name="patientsDetails2.memory" value="Paramnesia (déjà vu, jamais vu)">Paramnesia (déjà vu, jamais vu) </div>
+				<div><input type="checkbox" name="patientsDetails2.memory" value="Hypermnesia">Hypermnesia  </div> 
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label for="patientsDetails2.thinking">Thinking:  </label>
+				<div><input type="checkbox" name="patientsDetails2.thinking" value="Abstract Level">Abstract Level </div>
+				<div><input type="checkbox" name="patientsDetails2.thinking" value="Concrete thinking">Concrete thinking </div>
+				<div><input type="checkbox" name="patientsDetails2.thinking" value="Impaired reasoning">Impaired reasoning</div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-3" style="white-space: nowrap;">
+				<label for="patientsDetails2.emotion">Emotion:   </label>
+				<div><input type="checkbox" name="patientsDetails2.emotion" value="Normal Emotional reactions">Normal Emotional reactions </div>
+				<div><input type="checkbox" name="patientsDetails2.emotion" value="Abnormal emotional reactions">Abnormal emotional reactions </div>
+				<div><input type="checkbox" name="patientsDetails2.emotion" value="Abnormal expressions of emotion">Abnormal expressions of emotion </div>
+				<div><input type="checkbox" name="patientsDetails2.emotion" value="Morbid expressions of emotion">Morbid expressions of emotion </div>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-12">
+				<label>Judgment:   </label>
+				<table>
+					<tr style="width: 758px; height: 25px; ">
+							<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Personal: </b></td>
+							<td style="width: 231px; height: 25px"><input type="checkbox" name="patientsDetails2.judgementpersonal" value="Intact" style="width: 45px; ">&nbsp;Intact</td>
+							<td style="width: 322px; height: 25px"><input type="checkbox" name="patientsDetails2.judgementpersonal" value="Impaired" style="width: 45px; ">Impaired</td>
+					</tr>
+					
+					<tr style="width: 758px; height: 25px; ">
+							<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Social  :	 </b></td>
+							<td style="width: 231px; height: 25px"><input type="checkbox" name="patientsDetails2.judgementsocial" value="Intact" style="width: 45px; ">Intact</td>
+							<td style="width: 322px; height: 25px"><input type="checkbox" name="patientsDetails2.judgementsocial" value="Impaired" style="width: 45px; ">Impaired</td>
+					</tr>
+					<tr style="width: 758px; height: 25px; ">
+							<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Test    :	</b></td>  
+							<td style="width: 231px; height: 25px"><input type="checkbox" name="patientsDetails2.judgementtest" value="Intact" style="width: 45px; ">Intact</td>
+							<td style="width: 322px; height: 25px"><input type="checkbox" name="patientsDetails2.judgementtest" value="Impaired" style="width: 45px; ">Impaired</td>
+					</tr>
+				</table>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-12">
+				<label for="patientsDetails2.thinking">8.8	Insight –    </label>
+				<table>
+				 <tr>
+					<td><input type="checkbox" name="patientsDetails2.insight" value="Level 1. Complete denial of illness
+								The individual totally denies being ill, even when clear symptoms or dysfunction are present. Common in psychosis or anosognosia."
+								style="width: 50px;"></td>
+					<td style="width: 750px;"><b>Level 1.</b> Complete denial of illness <br/>
+						 		The individual totally denies being ill, even when clear symptoms or dysfunction are present. Common in psychosis or anosognosia.</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" name="patientsDetails2.insight" value="Level 2. Slight awareness of being sick and needing help, but denying it at the same time
+							The person may express minor doubts or complaints but immediately dismisses the idea of needing psychiatric help."
+							style="width: 50px;"></td>
+					<td style="width: 750px;"><b>Level 2.</b> Slight awareness of being sick and needing help, but denying it at the same time
+							The person may express minor doubts or complaints but immediately dismisses the idea of needing psychiatric help.</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" name="patientsDetails2.insight" value="Level 3. Awareness of being sick but blaming it on external factors
+							The illness is acknowledged, but the cause is attributed to external stressors, people, or circumstances—e.g., “It’s because of my boss.."
+							style="width: 50px;"></td>
+					<td style="width: 750px;"><b>Level 3.</b> Awareness of being sick but blaming it on external factors
+							The illness is acknowledged, but the cause is attributed to external stressors, people, or circumstances—e.g., “It’s because of my boss.” </td>
+				<tr>
+					<td><input type="checkbox" name="patientsDetails2.insight" value="Level 4. Awareness that illness is due to something unknown in oneself
+							The individual admits that the problem may be internal but cannot clearly define or understand what it is."
+							style="width: 50px;"></td>
+					<td style="width: 750px;"><b>Level 4.</b> Awareness that illness is due to something unknown in oneself
+							The individual admits that the problem may be internal but cannot clearly define or understand what it is. </td>
+				<tr>
+					<td><input type="checkbox" name="patientsDetails2.insight" value="Level 5. Intellectual insight
+							Recognizes the illness, its psychological nature, and causes, but this understanding is not integrated into emotional or behavioral change."
+							style="width: 50px;"></td>
+					<td style="width: 750px;"><b>Level 5.</b> Intellectual insight
+							Recognizes the illness, its psychological nature, and causes, but this understanding is not integrated into emotional or behavioral change. </td>
+				<tr>
+					<td><input type="checkbox" name="patientsDetails2.insight" value="Level 6. True emotional insight
+							Full recognition and emotional acceptance of the illness, leading to meaningful change in behavior, attitude, and coping mechanisms.">
+					<td style="width: 750px;"><b>Level 6.</b> True emotional insight
+							Full recognition and emotional acceptance of the illness, leading to meaningful change in behavior, attitude, and coping mechanisms. </td>
+				</tr>			
+				</table>
+			</div>
+			</div>
+			<div class="grid">
+			<div class="col-12">
+				<label for="patientsDetails2.otherobservations">Other Observations on MSE: </label>
+				<textarea  id="patientsDetails2.otherobservations" name="patientsDetails2.otherobservations"></textarea>
+			</div>
+			<div class="col-12">
+				<label for="patientsDetails2.provisionalDiagnosis">9.   Diagnosis: </label>
+				<textarea  id="patientsDetails2.provisionalDiagnosis" name="patientsDetails2.provisionalDiagnosis"></textarea>
+			</div> 
+			<div class="col-12">
+				<label for="patientsDetails2.psychologicalassessmentconducted">10. Psychological assessment Conducted:</label>
+				<textarea  id="patientsDetails2.psychologicalassessmentconducted" name="patientsDetails2.psychologicalassessmentconducted"></textarea>
+			</div>
+			<div class="col-12">
+				<label for="patientsDetails2.psychologicalreport">11. Psychological Report:</label>
+				<textarea  id="patientsDetails2.psychologicalreport" name="patientsDetails2.psychologicalreport"></textarea>
+			</div>
+			<div class="col-12">
+				<label for="patientsDetails2.managementplan">12. Management Plan:</label>
+				<textarea  id="patientsDetails2.managementplan" name="patientsDetails2.managementplan"></textarea>
+			</div> 
+			</div>
+      </fieldset>
+           <div align="center">
+       	    <a href="homePage" class="btn btn-primary"> HOME </a>
+			<button class="btn btn-primary">Add Patient</button>
+      </div>
+     </form>
+  </div>
 </body>
 </html>

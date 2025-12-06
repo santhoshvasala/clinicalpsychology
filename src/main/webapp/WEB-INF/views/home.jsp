@@ -11,7 +11,23 @@
 	<div class="container mt-5 bg-light">
 		<div class="row">
 			<div class="col-md-12">
-				<h1 class="text-center mb-3 mt-4 text-warning">Welcome to Clinical Psychology</h1>
+				<div class="dropdown">
+					<h3 align="right">
+						Welcome ${user.consultantFirstName} <i class="fas fa-cog"></i>
+					</h3>
+					<div class="dropdown-content">
+						<a href="viewConsultant/${user.consultantId}"
+							class="btn btn-outline-success"> View/Update Profile </a> <a
+							href="logout" class="btn btn-outline-success"> Log Out </a>
+					</div>
+				</div>
+				<form action="search" method="post">
+					<table class="table table-light">
+						<td><input type="text" id="searchString" name="searchString" /></td>
+						<td><button type="submit" class="btn btn-primary">Search</button></td>
+					</table>
+				</form>
+
 				<table class="table table-light">
 					<thead class="thead-dark">
 						<tr>
@@ -31,61 +47,25 @@
 								<td>${p.clientmobile}</td>
 								<td>${p.email1}</td>
 								<td>${p.placeofconsultation}</td>
-								<td> 
-								<a href="viewPatient/${p.id}"><i
-										class="fa fa-eye"></i></a
-								<a href="delete/${p.id}"><i
-										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
-									href="update/${p.id}"><i
-										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a></td>
+								<td><a href="viewPatient/${p.id}" title="View Patient">
+										<i class="fa fa-eye"></i>
+								</a> <a href="updatePatient/${p.id}" title="Update Patient"><i
+										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a> <a
+									href="deletePatient/${p.id}" title="Delete Patient"><i
+										class="fa-sharp fa-solid fa-trash text-danger"></i></a> <a
+									href="addSessionNotes/${p.id}" class="btn btn-outline-success">
+										Sessions </a> <a href="add-document-${p.id}"
+									class="btn btn-outline-success"> Attachments </a></td>
 							</tr>
 						</c:forEach>
 					</tbody>
 				</table>
-				<div class="container text-center mb-3">
-					<a href="addConsultant" class="btn btn-outline-success"> Add
-						Consultant </a>
+
 				<div class="container text-center mb-3">
 					<a href="addPatient" class="btn btn-outline-success"> Add
 						Patient </a>
 				</div>
-				<div class="container text-center mb-3">
-					<a href="addEducation" class="btn btn-outline-success"> Add
-						Education </a>
-				</div>
-				<div class="container text-center mb-3">
-					<a href="addGender" class="btn btn-outline-success"> Add
-						Gender </a>
-				</div>
-				<div class="container text-center mb-3">
-					<a href="addMaritalStatus" class="btn btn-outline-success"> Add
-						MaritalStatus </a>
-				</div>
-				<div class="container text-center mb-3">
-					<a href="addOccupation" class="btn btn-outline-success"> Add
-						Occupation </a>
-				</div>
-				<div class="container text-center mb-3">
-					<a href="addConsultationPlace" class="btn btn-outline-success"> Add
-						Places of consultation </a>
-				</div>
-				<div class="container text-center mb-3">
-					<a href="addPurpose" class="btn btn-outline-success"> Add
-						Purpose </a>
-				</div>
-				<div class="container text-center mb-3">
-					<a href="addReferralSource" class="btn btn-outline-success"> Add
-						Refferal Source </a>
-				</div>
-				<div class="container text-center mb-3">
-					<a href="addReligion" class="btn btn-outline-success"> Add
-						Religion </a>
-				</div>
-				
-				<div class="container text-center mb-3">
-					<a href="addSessionNotes" class="btn btn-outline-success"> Add
-						Session Notes </a>
-				</div>
+
 			</div>
 
 		</div>

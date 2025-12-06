@@ -17,11 +17,20 @@ function generateConsultactId() {
       var year = dateParts[0];
       var month = dateParts[1];
       var day = dateParts[2];
-  var cid = title+fname+lname+day+month+year;
-  document.getElementById("demo").innerHTML = "You selected: " + cid;
+  /* var cid = title+fname+lname+day+month+year; */
+  var cid = title+lname+day;
   document.getElementById("consultantId").value = cid;
   event.preventDefault();
 }
+
+function myFunction() {
+	  var x = document.getElementById("consultanPassword");
+	  if (x.type === "password") {
+	    x.type = "text";
+	  } else {
+	    x.type = "password";
+	  }
+	}
 </script>
 </head>
 <body>
@@ -29,62 +38,40 @@ function generateConsultactId() {
 	<div class="container mt-2 bg-light">
 		<div class="row">
 			<div class="col-md-6 offset-md-3">
-				<h1 class="text-center mb-3 mt-4">Consultant Registration Form:</h1>
+				<h1 class="text-center mb-3 mt-4">Consultant Registration Form</h1>
+							<c:if test="${not empty message}">
+    							<div class="alert alert-success">${message}</div>
+							</c:if>
 				<form action="handleConsultant" method="post">
+				<button type="submit" disabled style="display: none" aria-hidden="true"></button>
 				
-				
-				Name Title:<input type="text" id="consultantTitle" name="consultantTitle">
-				First Name:<input type="text" id="consultantFirstName" name="consultantFirstName">
-				Last Name: <input type="text" id="consultantLastName" name="consultantLastName">
-				Date of Birth: <input type="date" name="consultantDob" id="consultantDob" />
-				Education: <input type="text" id="consultantEducation" name="consultantEducation">
-				Designation: <input type="text" id="consultantDesignation" name="consultantDesignation">
-				License Details: <input type="text" id="consultantlicense" name="consultantlicense">
-				Organizations Affiliated to: <input type="text" id="consultantOrganization" name="consultantOrganization">
+				Name Title:<input type="text" id="consultantTitle" name="consultantTitle" required="required">
+				First Name:<input type="text" id="consultantFirstName" name="consultantFirstName" required="required">
+				Last Name: <input type="text" id="consultantLastName" name="consultantLastName" required="required">
+				Date of Birth: <input type="datetime-local" name="consultantDob" id="consultantDob" required="required"/>
+				Education: <input type="text" id="consultantEducation" name="consultantEducation" required="required">
+				Designation: <input type="text" id="consultantDesignation" name="consultantDesignation" required="required">
+				License Details: <input type="text" id="consultantlicense" name="consultantlicense" required="required">
+				Organizations Affiliated to: <input type="text" id="consultantOrganization" name="consultantOrganization" required="required">
 
-				Contact Number: <input type="text" id="consultantContact" name="consultantContact">
-				Email ID: <input type="text" id="consultantEmail" name="consultantEmail">
-				Address: <input type="text" id="consultantAddress" name="consultantAddress">
-				Emergency Contact: <input type="text" id="consultantEmergencyContact" name="consultantEmergencyContact">
+				Contact Number: <input type="text" id="consultantContact" name="consultantContact" required="required">
+				Email ID: <input type="text" id="consultantEmail" name="consultantEmail" required="required">
+				Address: <input type="text" id="consultantAddress" name="consultantAddress" required="required">
+				Emergency Contact: <input type="text" id="consultantEmergencyContact" name="consultantEmergencyContact" required="required">
 				
 				<button class="btn btn-primary" onclick="generateConsultactId()">Generate Consultant ID </button>
-				<p id="demo"></p>
-				UserName/ConsultantId: <input type="text" id="consultantId" name="consultantId">
-				Password: <input type="text" id="consultanPassword" name="consultantPassword">
+				UserName/ConsultantId: <input type="text" id="consultantId" name="consultantId" required="required">
+				Password: <input type="password" id="consultanPassword" name="consultantPassword" required="required">
+				<input type="checkbox" onclick="myFunction()">Show Password
 				
 				<div class="container text-center mb-4">
-					<a href="${pageContext.request.contextPath}" class="btn btn-outline-danger"> Back </a>
-					<button type="submit" class="btn btn-primary">Add Consultant</button>
+					<a href="${pageContext.request.contextPath}/homePage" class="btn btn-primary"> HOME </a>
+					<button type="submit" class="btn btn-primary">ADD</button>
 				</div>
 
 				</form>
 				
-				<table class="table table-light">
-					<thead class="thead-dark">
-						<tr>
-							<th scope="col">Consultants List</th>
-						</tr>
-					</thead>
-					<tbody>
-						<c:forEach items="${consultants}" var="p">
-
-							<tr class="table-light">
-								<td>${p.consultantTitle}</td>
-								<td>${p.consultantFirstName}</td>
-								<td>${p.consultantLastName}</td>
-								<td>${p.consultantEducation}</td>
-								<td>${p.consultantlicense}</td>
-								<td>${p.consultantContact}</td>
-								
-								<td> <a href="deleteConsultant/${p.consultantId}"><i
-										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
-									href="updateConsultant/${p.consultantId}"><i
-										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a></td>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
-			</div>
+							</div>
 		</div>
 	</div>
 

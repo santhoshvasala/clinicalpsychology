@@ -1,4 +1,4 @@
-package com.clinicalpsychology.springmvc.model;
+package com.clinicalpsychology.model;
 
 public class Login {
 

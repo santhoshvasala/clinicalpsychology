@@ -32,10 +32,13 @@ public class PatientsDetails2 {
     private String eycontact  ;
     private String ageappropriateness  ;
     private String notablephysicalfeatures  ;
+    private String posture;
     private String increasedactivity  ;
     private String decreasedactivity  ;
     private String abnormalmovements  ;
     private String quantity  ; 
+    private String quantityTempo;
+    private String quantityValume;
     private String rateandrhythm  ;
     private String formandstructure  ;
     private String disorderofstream  ;
@@ -55,6 +58,7 @@ public class PatientsDetails2 {
     private String magicalthinkingtext  ;
     private String ideasofreferencetext  ;
     private String persecutoryidastext  ;
+    private String othersText;
     private String possessionofthought  ;
     private String mood  ;
     private String affect  ;
@@ -74,9 +78,21 @@ public class PatientsDetails2 {
     private String  judgementpersonal  ;
     private String  judgementsocial  ;
     private String  judgementtest  ;
+    private String aphasiaText;
+    
     @Lob
     @Column(columnDefinition = "TEXT")
     private String  insight ;
+    
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String  psychologicalassessmentconducted  ;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String  psychologicalreport  ;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String  managementplan  ;
     
     @Lob
     @Column(columnDefinition = "TEXT")
@@ -84,7 +100,23 @@ public class PatientsDetails2 {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String  provisionalDiagnosis  ;
-    public Integer getPatientdetailid2() {
+    
+    
+    
+    
+    public String getAphasiaText() {
+		return aphasiaText;
+	}
+	public void setAphasiaText(String aphasiaText) {
+		this.aphasiaText = aphasiaText;
+	}
+	public String getPosture() {
+		return posture;
+	}
+	public void setPosture(String posture) {
+		this.posture = posture;
+	}
+	public Integer getPatientdetailid2() {
 		return patientdetailid2;
 	}
 	public void setPatientdetailid2(Integer patientdetailid2) {
@@ -98,6 +130,12 @@ public class PatientsDetails2 {
 	}
 	public String getGeneralbuild() {
 		return generalbuild;
+	}
+	public String getOthersText() {
+		return othersText;
+	}
+	public void setOthersText(String othersText) {
+		this.othersText = othersText;
 	}
 	public void setGeneralbuild(String generalbuild) {
 		this.generalbuild = generalbuild;
@@ -426,15 +464,20 @@ public class PatientsDetails2 {
 	public void setManagementplan(String managementplan) {
 		this.managementplan = managementplan;
 	}
-	@Lob
-    @Column(columnDefinition = "TEXT")
-    private String  psychologicalassessmentconducted  ;
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String  psychologicalreport  ;
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String  managementplan  ;
+	public String getQuantityTempo() {
+		return quantityTempo;
+	}
+	public void setQuantityTempo(String quantityTempo) {
+		this.quantityTempo = quantityTempo;
+	}
+	public String getQuantityValume() {
+		return quantityValume;
+	}
+	public void setQuantityValume(String quantityValume) {
+		this.quantityValume = quantityValume;
+	}
+	
+	
     
 	
     

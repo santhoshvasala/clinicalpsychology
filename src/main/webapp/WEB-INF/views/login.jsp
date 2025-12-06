@@ -25,12 +25,6 @@
 				<td></td>
 				<td align="left"><form:button id="login" name="login">Login</form:button></td>
 			</tr>
-
-			<tr></tr>
-			<tr>
-				<td></td>
-				<td><a href="homeW.jsp">Home</a></td>
-			</tr>
 		</table>
 	</form:form>
 	<table align="center">

@@ -44,7 +44,7 @@ public class EducationController {
 	public RedirectView deleteEducation(@PathVariable("id") int id, HttpServletRequest request) {
 		this.educationDao.deleteEducation(id);
 		RedirectView redirectView = new RedirectView();
-		redirectView.setUrl(request.getContextPath() + "/");
+		redirectView.setUrl(request.getContextPath() + "/addEducation");
 		return redirectView;
 	}
 	
@@ -52,6 +52,6 @@ public class EducationController {
 	public String updateEducation(@PathVariable("id")int pid, Model model) {
 		Education gender = this.educationDao.getEducation(pid);
 		model.addAttribute("education", gender);
-		return "updateEducation";
+		return "addEducation";
 	}
 }
