@@ -7,8 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -42,16 +44,19 @@ public class Patients {
 	private String puposeofreferral;
 	private String placeofconsultation;
 	private String consultantId;
+	private String languagesKnown;
+	@Lob
+	private byte[] profilePic;
 	
+	@Lob
+	private byte[] familyHIstoryPic;
 	
-	public String getConsultantId() {
-		return consultantId;
-	}
-
-	public void setConsultantId(String consultantId) {
-		this.consultantId = consultantId;
-	}
-
+	@Transient
+	private String base64imageFile;
+	
+	@Transient
+	private String base64FamilyFile;
+	
 	@OneToOne(mappedBy = "patientid")
 	private PatientsDetails1 patientsDetails1;
 
@@ -63,6 +68,67 @@ public class Patients {
 
 	@OneToMany(mappedBy = "patientid")
 	private Set<SessionNotes> sessions;
+	
+	private Integer patientNumber;
+	
+	
+	
+	public String getLanguagesKnown() {
+		return languagesKnown;
+	}
+
+	public void setLanguagesKnown(String languagesKnown) {
+		this.languagesKnown = languagesKnown;
+	}
+
+	public Integer getPatientNumber() {
+		return patientNumber;
+	}
+
+	public void setPatientNumber(Integer patientNumber) {
+		this.patientNumber = patientNumber;
+	}
+
+	public byte[] getFamilyHIstoryPic() {
+		return familyHIstoryPic;
+	}
+
+	public void setFamilyHIstoryPic(byte[] familyHIstoryPic) {
+		this.familyHIstoryPic = familyHIstoryPic;
+	}
+
+	public String getBase64FamilyFile() {
+		return base64FamilyFile;
+	}
+
+	public void setBase64FamilyFile(String base64FamilyFile) {
+		this.base64FamilyFile = base64FamilyFile;
+	}
+
+	public String getBase64imageFile() {
+		return base64imageFile;
+	}
+
+	public void setBase64imageFile(String base64imageFile) {
+		this.base64imageFile = base64imageFile;
+	}
+	
+	
+	public byte[] getProfilePic() {
+		return profilePic;
+	}
+
+	public void setProfilePic(byte[] profilePic) {
+		this.profilePic = profilePic;
+	}
+
+	public String getConsultantId() {
+		return consultantId;
+	}
+
+	public void setConsultantId(String consultantId) {
+		this.consultantId = consultantId;
+	}
 
 	public PatientsDetails2 getPatientsDetails2() {
 		return patientsDetails2;

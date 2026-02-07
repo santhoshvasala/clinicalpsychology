@@ -34,20 +34,17 @@ public class ConsultantController {
 		
 		Consultant consultant = this.consultantDao.getConsultant(id);
 		model.addAttribute("consultantUser", consultant);
-		System.out.println(" in view consultant");
 		return "editConsultant";
 	}
 	@RequestMapping("/viewAllConsultants")
 	public String viewAllConsultants(HttpServletRequest request,Model model) {
 		List<Consultant> consultants = consultantDao.getConsultants();
 		model.addAttribute("consultants",consultants);
-		System.out.println(" in viewAllConsultant");
 		return "viewAllConsultants";
 	}
 	@RequestMapping(value = "/handleEditConsultant", method = RequestMethod.POST)
 	public String handleEditConsultant(@ModelAttribute Consultant consultant, HttpServletRequest request,
 			Model model) {
-		System.out.println(" in handle consultant");
 		if (consultant != null && consultant.getConsultantId() != null) {
 			consultantDao.saveOrUpdateConsultant(consultant);
 		}

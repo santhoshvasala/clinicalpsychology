@@ -33,7 +33,6 @@ public class SessionNotesController {
 	@RequestMapping("/addSessionNotes/{patientId}")
 	public String addSessionNotes(@PathVariable("patientId") int pid, Model model) {
 		model.addAttribute("pid", pid);
-		System.out.println(" in session");
 		List<SessionNotes> sessions = sessionNotesDao.getAllSessionNotesByPatientId(pid);
 		model.addAttribute("sessions", sessions);
 		return "addSessionNotes";
@@ -42,11 +41,8 @@ public class SessionNotesController {
 	@RequestMapping(value = "/handleSessionNotes/{patientId}", method = RequestMethod.POST)
 	public RedirectView handleSessionNotes(@PathVariable("patientId") int pid,
 			@ModelAttribute SessionNotes sessionNotes, HttpServletRequest request, Model model) {
-		System.out.println("sesson notes:" + sessionNotes.getSessionnote());
-		System.out.println("sesson date:" + sessionNotes.getSessionoccuredon());
 		Patients patient = patientDao.getPatient(pid);
 		sessionNotes.setPatientid(patient);
-		System.out.println("patient name :" + patient.getFirstName());
 		sessionNotesDao.createSessionNotes(sessionNotes);
 		RedirectView redirectView = new RedirectView();
 		redirectView.setUrl(request.getContextPath() + "/addSessionNotes/" + patient.getId());
@@ -56,8 +52,6 @@ public class SessionNotesController {
 	@RequestMapping(value = "/handleUpdateSessionNotes/{sessionId}", method = RequestMethod.POST)
 	public RedirectView handleUpdateSessionNotes(@PathVariable("sessionId") int sessionId,
 			@ModelAttribute SessionNotes sessionNotes, HttpServletRequest request, Model model) {
-		System.out.println("sesson notes:" + sessionNotes.getSessionnote());
-		System.out.println("sesson date:" + sessionNotes.getSessionoccuredon());
 		SessionNotes notes = sessionNotesDao.getSessionNotes(sessionId);
 		sessionNotes.setId(sessionId);
 		sessionNotes.setPatientid(notes.getPatientid());
@@ -71,9 +65,6 @@ public class SessionNotesController {
 
 	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
 	public String uploadFile(@RequestParam("file") MultipartFile file) {
-		if (!file.isEmpty()) {
-			System.out.println(" file name:" + file.getName());
-		}
 		return "addSessionNotes";
 		/*
 		 * if (!file.isEmpty()) { try { // Save the file to a specific location String

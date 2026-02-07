@@ -31,7 +31,6 @@ public class PurposeController {
 	
 	@RequestMapping(value = "/handlePurpose", method = RequestMethod.POST)
 	public RedirectView handlePurpose(@ModelAttribute Purpose Purpose, HttpServletRequest request, Model model) {
-		System.out.println(Purpose);
 		PurposeDao.createPurpose(Purpose);
 		RedirectView redirectView = new RedirectView();
 		redirectView.setUrl(request.getContextPath() + "/addPurpose");

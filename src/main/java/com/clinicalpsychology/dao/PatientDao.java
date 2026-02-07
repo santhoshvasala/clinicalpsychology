@@ -1,5 +1,6 @@
 package com.clinicalpsychology.dao;
 
+import java.sql.Blob;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -11,10 +12,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.clinicalpsychology.model.Attachment;
-import com.clinicalpsychology.model.Consultant;
 import com.clinicalpsychology.model.Patients;
 import com.clinicalpsychology.model.PatientsDetails1;
 import com.clinicalpsychology.model.PatientsDetails2;
+import com.clinicalpsychology.model.Search;
 import com.clinicalpsychology.model.SessionNotes;
 
 @Component
@@ -27,10 +28,11 @@ public class PatientDao {
 	@Transactional
 	public void createPatient(Patients patient) {
 		this.hibernateTemplate.saveOrUpdate(patient);
-		System.out.println(patient.getId());
+
 		PatientsDetails1 details = patient.getPatientsDetails1();
 		details.setPatientid(patient);
 		this.hibernateTemplate.saveOrUpdate(details);
+
 		PatientsDetails2 details2 = patient.getPatientsDetails2();
 		details2.setPatientid(patient);
 		this.hibernateTemplate.saveOrUpdate(details2);
@@ -42,31 +44,97 @@ public class PatientDao {
 		return ((List<Long>) this.hibernateTemplate.find(query)).get(0) > 0 ? true : false;
 	}
 
+	public Integer getMaxPatientNumberByCidYear(String consultantId, int year) {
+		String query = " select max(patientNumber) FROM Patients where consultantId = '" + consultantId
+				+ "' and Year(createdDate)=" + year;
+		return ((List<Integer>) this.hibernateTemplate.find(query)).get(0);
+	}
+
 	@Transactional
-	public List<Patients> searchPatients(String[] searchString, String consultantId) {
+	public List<Patients> searchPatients(Search search, String consultantId, int page, int pageSize) {
 		StringBuffer sb = new StringBuffer();
 		boolean and = false;
-		sb.append("FROM Patients  ");
-		if (searchString != null || consultantId != null) {
+		sb.append("FROM Patients p ");
+		if (search != null || consultantId != null) {
 			sb.append("  WHERE ");
 		}
 		if (consultantId != null && !consultantId.equalsIgnoreCase("admin")) {
-			sb.append(" consultantId = '" + consultantId + "' ");
+			sb.append(" p.consultantId = '" + consultantId + "' ");
 			and = true;
 		}
-		if (!StringUtils.isEmpty(searchString)) {
-			if (and) {
-				sb.append(" and ");
+		if (!StringUtils.isEmpty(search.getSearchName()) || !StringUtils.isEmpty(search.getSearchMobile())
+				|| !StringUtils.isEmpty(search.getSearchEmail()) || !StringUtils.isEmpty(search.getSearchAge())
+				|| !StringUtils.isEmpty(search.getSearchDiagnosis())) {
+
+			if (!StringUtils.isEmpty(search.getSearchName())) {
+				sb.append(" and p.firstName like '%" + search.getSearchName() + "%'");
 			}
-			sb.append(" firstName in '%" + searchString + "%' OR  clientmobile like '%" + searchString + "%' ");
+			if (!StringUtils.isEmpty(search.getSearchEmail())) {
+				sb.append(" and p.email1 like '%" + search.getSearchEmail() + "%'");
+			}
+			if (!StringUtils.isEmpty(search.getSearchMobile())) {
+				sb.append(" and p.clientmobile like '%" + search.getSearchMobile() + "%'");
+			}
+			if (!StringUtils.isEmpty(search.getSearchAge())) {
+				sb.append(" and p.age like '%" + search.getSearchAge() + "%'");
+			}
+			if (!StringUtils.isEmpty(search.getSearchDiagnosis())) {
+				sb.append(" and p.patientsDetails2.provisionalDiagnosis like '%" + search.getSearchDiagnosis() + "%'");
+			}
 		}
-		Query<Patients> query = this.hibernateTemplate.getSessionFactory().getCurrentSession()
-				.createQuery(sb.toString(), Patients.class);
-		return query.list();
+		int firstResultIndex = (page - 1) * pageSize;
+		sb.append(" order by patientNumber ");
+		Query query = hibernateTemplate.getSessionFactory().getCurrentSession().createQuery(sb.toString());
+		query.setFirstResult(firstResultIndex);
+		query.setMaxResults(pageSize);
+		return (List<Patients>) query.list();
+	}
+
+	@Transactional
+	public long searchPatientsCount(Search search, String consultantId) {
+		StringBuffer sb = new StringBuffer();
+		boolean and = false;
+		sb.append("select count(1) FROM Patients p ");
+		if (search != null || consultantId != null) {
+			sb.append("  WHERE ");
+		}
+		if (consultantId != null && !consultantId.equalsIgnoreCase("admin")) {
+			sb.append(" p.consultantId = '" + consultantId + "' ");
+			and = true;
+		}
+		if (!StringUtils.isEmpty(search.getSearchName()) || !StringUtils.isEmpty(search.getSearchMobile())
+				|| !StringUtils.isEmpty(search.getSearchEmail()) || !StringUtils.isEmpty(search.getSearchAge())
+				|| !StringUtils.isEmpty(search.getSearchDiagnosis())) {
+
+			if (!StringUtils.isEmpty(search.getSearchName())) {
+				sb.append(" and p.firstName like '%" + search.getSearchName() + "%'");
+			}
+			if (!StringUtils.isEmpty(search.getSearchEmail())) {
+				sb.append(" and p.email1 like '%" + search.getSearchEmail() + "%'");
+			}
+			if (!StringUtils.isEmpty(search.getSearchMobile())) {
+				sb.append(" and p.clientmobile like '%" + search.getSearchMobile() + "%'");
+			}
+			if (!StringUtils.isEmpty(search.getSearchAge())) {
+				sb.append(" and p.age like '%" + search.getSearchAge() + "%'");
+			}
+			if (!StringUtils.isEmpty(search.getSearchDiagnosis())) {
+				sb.append(" and p.patientsDetails2.provisionalDiagnosis like '%" + search.getSearchDiagnosis() + "%'");
+			}
+		}
+		return ((List<Long>) this.hibernateTemplate.find(sb.toString())).get(0);
+	}
+
+	public long getAllPatientsCount() {
+		String hql = "select count(1) FROM Patients ";
+		return ((List<Long>) this.hibernateTemplate.find(hql)).get(0);
 	}
 
 	// Getting all Product
-	public java.util.List<Patients> getPatient() {
+	public java.util.List<Patients> getAllPatients(int page, int pageSize) {
+		int firstResultIndex = (page - 1) * pageSize;
+		this.hibernateTemplate.setFetchSize(firstResultIndex);
+		this.hibernateTemplate.setMaxResults(pageSize);
 		java.util.List<Patients> products = this.hibernateTemplate.loadAll(Patients.class);
 		return products;
 	}
@@ -106,9 +174,19 @@ public class PatientDao {
 		return patient;
 	}
 
-	public List<Patients> getPatientsByConsultant(String consultantId) {
-		String hql = "FROM Patients u WHERE u.consultantId = '" + consultantId + "' ";
-		return (List<Patients>) hibernateTemplate.find(hql);
+	public long getPatientsCountByConsultant(String consultantId) {
+		String hql = "select count(1) FROM Patients u WHERE u.consultantId = '" + consultantId + "'";
+		return ((List<Long>) this.hibernateTemplate.find(hql)).get(0);
+	}
+
+	@Transactional
+	public List<Patients> getPatientsByConsultant(String consultantId, int page, int pageSize) {
+		int firstResultIndex = (page - 1) * pageSize;
+		String hql = "FROM Patients u WHERE u.consultantId = '" + consultantId + "' order by patientNumber ";
+		Query query = hibernateTemplate.getSessionFactory().getCurrentSession().createQuery(hql);
+		query.setFirstResult(firstResultIndex);
+		query.setMaxResults(pageSize);
+		return (List<Patients>) query.list();
 	}
 
 }

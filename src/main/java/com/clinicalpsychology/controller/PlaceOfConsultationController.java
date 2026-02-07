@@ -32,7 +32,6 @@ public class PlaceOfConsultationController {
 	
 	@RequestMapping(value = "/handlePlaceOfConsulation", method = RequestMethod.POST)
 	public RedirectView handlePlaceOfConsulation(@ModelAttribute ConsultationPlace consultationPlace, HttpServletRequest request, Model model) {
-		System.out.println(consultationPlace);
 		placeOfConsulationDao.createConsultationPlace(consultationPlace);
 		RedirectView redirectView = new RedirectView();
 		redirectView.setUrl(request.getContextPath() + "/addConsultationPlace");

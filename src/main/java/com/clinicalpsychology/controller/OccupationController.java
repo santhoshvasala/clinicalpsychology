@@ -31,7 +31,6 @@ public class OccupationController {
 
 	@RequestMapping(value = "/handleOccupation", method = RequestMethod.POST)
 	public RedirectView handleOccupation(@ModelAttribute Occupation gender, HttpServletRequest request, Model model) {
-		System.out.println(gender);
 		occupationDao.createOccupation(gender);
 		RedirectView redirectView = new RedirectView();
 		redirectView.setUrl(request.getContextPath() + "/addOccupation");

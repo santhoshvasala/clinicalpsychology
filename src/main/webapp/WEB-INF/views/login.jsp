@@ -1,37 +1,90 @@
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      width: 300px;
+      text-align: center;
+    }
+
+    .login-container h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .login-container input:focus {
+      border-color: #6c63ff;
+      outline: none;
+      box-shadow: 0 0 5px rgba(108,99,255,0.5);
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      background: #6c63ff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .login-container button:hover {
+      background: #574b90;
+    }
+
+    .login-container p {
+      margin-top: 15px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .login-container a {
+      color: #6c63ff;
+      text-decoration: none;
+    }
+
+    .login-container a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-
-	<form:form id="loginForm" modelAttribute="login" action="loginProcess"
-		method="post">
-		<table align="center">
-			<tr>
-				<td><form:label path="username">Username: </form:label></td>
-				<td><form:input path="username" name="username" id="username" /></td>
-			</tr>
-			<tr>
-				<td><form:label path="password">Password:</form:label></td>
-				<td><form:password path="password" name="password"
-						id="password" /></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td align="left"><form:button id="login" name="login">Login</form:button></td>
-			</tr>
-		</table>
-	</form:form>
-	<table align="center">
-		<tr>
-			<td style="font-style: italic; color: red;">${message}</td>
-		</tr>
-	</table>
-
+  <div class="login-container">
+    <h2>Login</h2>
+    <form 	id="loginForm" modelAttribute="login" action="loginProcess"
+			method="post">
+      <input type="text" placeholder="Username" required name="username">
+      <input type="password" placeholder="Password" required name="password">
+      <button type="submit">Login</button>
+    </form>
+     </div>
 </body>
 </html>

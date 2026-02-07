@@ -84,7 +84,6 @@ public class AttachmentsController {
     public String uploadDocument(@Valid FileBucket fileBucket, BindingResult result, ModelMap model, @PathVariable int userId) throws IOException{
          
         if (result.hasErrors()) {
-            System.out.println("validation errors");
             Patients user = patientDao.getPatient(userId);
             model.addAttribute("user", user);
  
@@ -93,14 +92,9 @@ public class AttachmentsController {
              
             return "attachments";
         } else {
-             
-            System.out.println("Fetching file");
-             
             Patients user = patientDao.getPatient(userId);
             model.addAttribute("user", user);
- 
             saveDocument(fileBucket, user);
- 
             return "redirect:/add-document-"+userId;
         }
     }

@@ -32,7 +32,6 @@ public class ReligionController {
 	
 	@RequestMapping(value = "/handleReligion", method = RequestMethod.POST)
 	public RedirectView handleReligion(@ModelAttribute Religion religion, HttpServletRequest request, Model model) {
-		System.out.println(religion);
 		ReligionDao.createReligion(religion);
 		RedirectView redirectView = new RedirectView();
 		redirectView.setUrl(request.getContextPath() + "/addReligion");

@@ -41,6 +41,8 @@ body {
     */
      background-size: cover;
     background-repeat: no-repeat;
+    background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+    
 }
 .dropbtn {
   background-color: #04AA6D;

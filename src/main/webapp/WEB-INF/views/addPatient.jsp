@@ -9,6 +9,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
   <title>Psychological Case Record</title>
   <style>
     :root {
@@ -19,14 +20,17 @@
       --border: #e5e7eb;
       --focus: #14b8a6;
     }
-    html, body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      line-height: 1.5;
-      margin: 0;
-      padding: 0;
-    }
+    
+	html, body {
+		background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+		color: var(--ink);
+		font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+			Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji",
+			"Segoe UI Symbol";
+		line-height: 1.5;
+		margin: 0;
+		padding: 0;
+	}
     .container {
       max-width: 900px;
       margin: 2rem auto;
@@ -126,6 +130,60 @@
       .container { margin: 0; max-width: 100%; }
       form { border: none; padding: 0; }
     }
+        .file-uploader {
+  /* make it invisible */
+  opacity: 0;
+  /* make it take the full height and width of the parent container */
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  /* make it absolute positioned */
+  position: absolute;
+  top: 0%;
+  left: 0%;
+}
+
+.upload-icon {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* initial icon state */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: #ccc;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #bbb;
+}
+
+.profile-picture {
+  opacity: 0.75;
+  height: 250px;
+  width: 250px;
+  position: relative;
+  overflow: hidden;
+
+  /* default image */
+  background: url('https://qph.cf2.quoracdn.net/main-qimg-f32f85d21d59a5540948c3bfbce52e68');
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+
+  -webkit-box-shadow: 0 8px 6px -6px black;
+  -moz-box-shadow: 0 8px 6px -6px black;
+  box-shadow: 0 8px 6px -6px black;
+}
+
+/* toggle icon state */
+.profile-picture:hover .upload-icon {
+  opacity: 1;
+}
+.hidden{display:none!important;visibility:hidden!important}
   </style>
   <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -156,6 +214,41 @@
 	}
 	document.getElementById("age").value=age;
 }
+  
+  function previewHistoryImage() {
+	  var preview1 = document.querySelector('#historyImage');
+	  var file1    = document.getElementById('fh-image-upload').files[0];
+	  var reader1  = new FileReader(); 
+	  reader1.addEventListener("load", function () {
+	    preview1.src = reader1.result;
+	  }, false);
+
+	  if (file1) {
+	    reader1.readAsDataURL(file1);
+	  }
+  }
+  function previewFile() {
+	  var preview = document.querySelector('#profile-image1');
+	  var file    = document.getElementById('profile-image-upload').files[0];
+	  var reader  = new FileReader();
+
+	  reader.addEventListener("load", function () {
+	    preview.src = reader.result;
+	  }, false);
+
+	  if (file) {
+	    reader.readAsDataURL(file);
+	  }
+	}
+	                      $(function() {
+	            $('#profile-image1').on('click', function() {
+	                $('#profile-image-upload').click();
+	            });
+				
+				$('#historyImage').on('click', function() {
+	                $('#fh-image-upload').click();
+	            });
+	        });
   </script>
 </head>
 <body>
@@ -169,8 +262,16 @@
 	<c:if test="${not empty message}">
 		<div class="alert alert-success">${message}</div>
 	</c:if>
-    <form aria-label="Psychological Case Record" action="handleAddPatient" method="post" id="addPatientForm">
+    <form aria-label="Psychological Case Record" action="handleAddPatient" method="post" id="addPatientForm" enctype="multipart/form-data">
     <button type="submit" disabled style="display: none" aria-hidden="true"></button>
+    <fieldset>
+    <div class="profile-pic">
+                 
+                        <img alt="User Pic" src="${pageContext.request.contextPath}/resources/images/patient.png" id="profile-image1" height="200" width="200">
+                        <input id="profile-image-upload" name="patientPic" class="hidden" type="file" onchange="previewFile()">
+                        <div style="color:#999;" >  </div>
+                </div>
+    </fieldset>
       <fieldset>
         <div class="grid">
           <div class="col-6">
@@ -263,6 +364,10 @@
 					</c:forEach>
 				</select>
           </div>
+           <div class="col-6">
+            <label for="languagesKnown">Languages known</label>
+            <input id="languagesKnown" name="languagesKnown" type="text" />
+          </div>
         </div>
       </fieldset>
 
@@ -349,6 +454,19 @@
 	            <label for="patientsDetails1.familyhistory">5. Family History:</label>
 	            <textarea id="patientsDetails1.familyhistory" name="patientsDetails1.familyhistory" placeholder=""></textarea>
           	</div>
+          	</div>
+          	</fieldset>
+          	<fieldset>
+          	 <div class="profile-pic">
+                 
+                        <img alt="History Pic" src="${pageContext.request.contextPath}/resources/images/noImage.png" id="historyImage" height="200" width="200">
+                        <input id="fh-image-upload" name="historyPic" class="hidden" type="file" onchange="previewHistoryImage()">
+                        <div style="color:#999;" >  </div>
+                </div>
+    		</fieldset>
+          	
+          	<fieldset>
+          	<div class="grid">           	
           	<div class="col-12">
 	            <label>6.0 Personal History: </label>
 	             <label for="patientsDetails1.birthdevelopment">6.1 Birth & Developmental –</label>
@@ -509,14 +627,14 @@
 				<label>8.3 Speech –  </label>	
 				<label for="patientsDetails2.quantity">Quantity: </label>	  
 				<div><input type="checkbox" name="patientsDetails2.quantity" value="Tempo (high/moderate/low)"> Tempo
-					  <input type="radio" name="patientsDetails2.quantityTempo" value="high">high
-					  <input type="radio" name="patientsDetails2.quantityTempo" value="moderate">moderate
-					  <input type="radio" name="patientsDetails2.quantityTempo" value="low">low
+					  <input type="radio" name="patientsDetails2.quantityTempo" value="high" style="margin-left: 55px;width: 20px;">high
+					  <input type="radio" name="patientsDetails2.quantityTempo" value="moderate" style="width: 20px;">moderate
+					  <input type="radio" name="patientsDetails2.quantityTempo" value="low" style="width: 20px;">low
 				</div>
 				<div><input type="checkbox" name="patientsDetails2.quantity" value="Volume (high/moderate/ low)"> Volume
-				 	  <input type="radio" name="patientsDetails2.quantityValume" value="high">high
-					  <input type="radio" name="patientsDetails2.quantityValume" value="moderate">moderate
-					  <input type="radio" name="patientsDetails2.quantityValume" value="low">low
+				 	  <input type="radio" name="patientsDetails2.quantityValume" value="high" style="margin-left: 50px;width: 20px;">high
+					  <input type="radio" name="patientsDetails2.quantityValume" value="moderate" style="width: 20px;">moderate
+					  <input type="radio" name="patientsDetails2.quantityValume" value="low" style="width: 20px;">low
 				
 				</div>
 				<div><input type="checkbox" name="patientsDetails2.quantity" value="Pressure of speech"> Pressure of speech</div>
@@ -587,20 +705,19 @@
 			<div class="col-3" style="white-space: nowrap;">
 				<label for="patientsDetails2.contentofthought">Content of Thought:</label>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Obsessions& compulsions"> Obsessions& compulsions
-				<input type="text" id="contentofthought" name="contentofthought"> </div>
+				<input type="text" id="obsessioncompulsionstext" name="obsessioncompulsionstext"> </div>
 				
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Thought alienation"> Thought alienation
 				<input type="text" id="thoughtalienation"  name="thoughtalienation"> </div>
-				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)"> Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)
+				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)"> Delusions (primary and secondary; persecutory, grandiose,referential, guilt, poverty, <br>
+							<span style="margin-left: 210px;"> infidelity, love, illhealth,nihilisticetc.) </span>
 				<input type="text" id="delusionstext" name="delusionstext">  </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Overvalued ideas"> Overvalued ideas
 				<input type="text" id="overvaluedideastext" name="overvaluedideastext">  </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Phobias"> Phobias
 				<input type="text" id="phobiastext" name="phobiastext"> </div>
-				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Overvalued ideas"> Overvalued ideas
-				<input type="text" id="overvaluedideastext" name="overvaluedideastext"> </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Depressive Cognitions (hopelessness, helplessness, worthlessness):"> Depressive Cognitions (hopelessness, helplessness, worthlessness):
-				<input type="text" id="deressivecongnitionstext" name="deressivecongnitionstext">		 </div>	
+				<input type="text" id="deressivecongnitionstext" name="deressivecongnitionstext" style="width:150px;">		 </div>	
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Guilt"> Guilt
 				<input type="text" id="guilttext" name="guilttext"> </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Worries"> Worries

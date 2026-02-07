@@ -32,7 +32,6 @@ public class EducationController {
 	
 	@RequestMapping(value = "/handleEducation", method = RequestMethod.POST)
 	public RedirectView handleEducation(@ModelAttribute Education education, HttpServletRequest request, Model model) {
-		System.out.println(education);
 		educationDao.createEducation(education);
 		RedirectView redirectView = new RedirectView();
 		redirectView.setUrl(request.getContextPath() + "/addEducation");

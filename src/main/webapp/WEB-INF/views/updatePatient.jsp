@@ -9,6 +9,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 <title>Psychological Case Record</title>
 <style>
 :root {
@@ -21,7 +22,7 @@
 }
 
 html, body {
-	background: var(--bg);
+	background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
 	color: var(--ink);
 	font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
 		Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji",
@@ -168,6 +169,60 @@ a {
 		padding: 0;
 	}
 }
+        .file-uploader {
+  /* make it invisible */
+  opacity: 0;
+  /* make it take the full height and width of the parent container */
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  /* make it absolute positioned */
+  position: absolute;
+  top: 0%;
+  left: 0%;
+}
+
+.upload-icon {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* initial icon state */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: #ccc;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #bbb;
+}
+
+.profile-picture {
+  opacity: 0.75;
+  height: 250px;
+  width: 250px;
+  position: relative;
+  overflow: hidden;
+
+  /* default image */
+  background: url('https://qph.cf2.quoracdn.net/main-qimg-f32f85d21d59a5540948c3bfbce52e68');
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+
+  -webkit-box-shadow: 0 8px 6px -6px black;
+  -moz-box-shadow: 0 8px 6px -6px black;
+  box-shadow: 0 8px 6px -6px black;
+}
+
+/* toggle icon state */
+.profile-picture:hover .upload-icon {
+  opacity: 1;
+}
+.hidden{display:none!important;visibility:hidden!important}
 </style>
 <script>
 	document.addEventListener('DOMContentLoaded', function() {
@@ -196,6 +251,42 @@ a {
 		}
 		document.getElementById("age").value = age;
 	}
+	 function previewHistoryImage() {
+		  var preview1 = document.querySelector('#historyImage');
+		  var file1    = document.getElementById('fh-image-upload').files[0];
+		  var reader1  = new FileReader(); 
+		  reader1.addEventListener("load", function () {
+		    preview1.src = reader1.result;
+		  }, false);
+
+		  if (file1) {
+		    reader1.readAsDataURL(file1);
+		  }
+		  document.getElementById('isfamilyPicChanged').value=true;
+	  }
+	  function previewFile() {
+		  var preview = document.querySelector('#profile-image1');
+		  var file    = document.getElementById('profile-image-upload').files[0];
+		  var reader  = new FileReader();
+
+		  reader.addEventListener("load", function () {
+		    preview.src = reader.result;
+		  }, false);
+
+		  if (file) {
+		    reader.readAsDataURL(file);
+		  }
+		  document.getElementById('isProfileChanged').value=true;
+		}
+		                      $(function() {
+		            $('#profile-image1').on('click', function() {
+		                $('#profile-image-upload').click();
+		            });
+					
+					$('#historyImage').on('click', function() {
+		                $('#fh-image-upload').click();
+		            });
+		        });
 </script>
 </head>
 <body>
@@ -211,9 +302,27 @@ a {
 		</c:if>
 		<form aria-label="Update Case Record"
 			action="${pageContext.request.contextPath}/handleUpdatePatient/${patient.id}"
-			method="post" id="addPatientForm">
+			method="post" id="addPatientForm" enctype="multipart/form-data">
+			<input type="hidden" id="patientNumber"
+						name="patientNumber"
+						value="${patient.patientNumber}" />
+			<input type="hidden" id="isProfileChanged"
+						name="isProfileChanged"
+						value="false"/>
+			<input type="hidden" id="isfamilyPicChanged"
+						name="isfamilyPicChanged"
+						value="false"/>
 			<button type="submit" disabled style="display: none"
 				aria-hidden="true"></button>
+				
+			<fieldset>
+    			<div class="profile-pic">
+                 
+                        <img alt="User Pic" src="data:image/jpeg;base64,${patient.base64imageFile}" id="profile-image1" height="200" width="200">
+                        <input id="profile-image-upload" name="patientPic" class="hidden" type="file" onchange="previewFile()">
+                        <div style="color:#999;" >  </div>
+                </div>
+   			</fieldset>
 			<fieldset>
 				<div class="grid">
 					<div class="col-6">
@@ -354,6 +463,10 @@ a {
 								</c:choose>
 							</c:forEach>
 						</select>
+					</div>
+					<div class="col-6">
+						<label for="languagesKnown">languages Known</label>
+						<input id="languagesKnown" name="languagesKnown" type="text" value="${patient.languagesKnown}" />
 					</div>
 				</div>
 			</fieldset>
@@ -505,6 +618,17 @@ a {
 						<textarea id="patientsDetails1.familyhistory"
 							name="patientsDetails1.familyhistory">${patient.patientsDetails1.familyhistory}</textarea>
 					</div>
+					</div>
+					</fieldset>
+					<fieldset>
+		    			<div class="profile-pic">
+		                        <img alt="family Pic" src="data:image/jpeg;base64,${patient.base64FamilyFile}" id="historyImage" height="200" width="200">
+		                        <input id="fh-image-upload" name="historyPic" class="hidden" type="file" onchange="previewHistoryImage()" >
+		                        <div style="color:#999;" >  </div>
+		                </div>
+		   			</fieldset>
+		   			<fieldset>
+		   			<div class="grid">
 					<div class="col-12">
 						<label>6.0 Personal History: </label> <label
 							for="patientsDetails1.birthdevelopment">6.1 Birth &
@@ -596,6 +720,9 @@ a {
 						</div>
 					</div>
 			</fieldset>
+			<input type="hidden" id="patientsDetails2.patientdetailid2"
+						name="patientsDetails2.patientdetailid2"
+						value="${patient.patientsDetails2.patientdetailid2}" />
 			<fieldset>
 				<legend>8. Mental Status:</legend>
 				<legend>8.1 Appearance –</legend>
@@ -821,41 +948,125 @@ a {
 						<label>8.3 Speech – </label> <label
 							for="patientsDetails2.quantity">Quantity: </label>
 						<div>
-							<input type="checkbox" name="patientsDetails2.quantity"
-								value="Tempo (high/moderate/low)"> Tempo <input
-								type="radio" name="patientsDetails2.quantityTempo" value="high">high
-							<input type="radio" name="patientsDetails2.quantityTempo"
-								value="moderate">moderate <input type="radio"
-								name="patientsDetails2.quantityTempo" value="low">low
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.quantity, 'Tempo (high/moderate/low)')}">
+		     							<input type="checkbox" name="patientsDetails2.quantity"
+								value="Tempo (high/moderate/low)" checked="checked"> Tempo 
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.quantity, 'Tempo (high/moderate/low)')}">
+									 <input type="checkbox" name="patientsDetails2.quantity"
+								value="Tempo (high/moderate/low)"> Tempo
+									 </c:if>	
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.quantityTempo, 'high')}">
+			     							<input	type="radio" name="patientsDetails2.quantityTempo" value="high" style="margin-left: 50px;width: 20px;" checked="checked">high
+			    						</c:if>    
+			   							<c:if test="${not fn:contains(patient.patientsDetails2.quantityTempo, 'high')}">
+										 <input	type="radio" name="patientsDetails2.quantityTempo" value="high" style="margin-left: 50px;width: 20px;">high
+							</c:if>
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.quantityTempo, 'moderate')}">
+			     							<input type="radio" name="patientsDetails2.quantityTempo"	value="moderate" style="width: 20px;" checked="checked">moderate
+			    						</c:if>    
+			   							<c:if test="${not fn:contains(patient.patientsDetails2.quantityTempo, 'moderate')}">
+										 <input type="radio" name="patientsDetails2.quantityTempo"	value="moderate" style="width: 20px;">moderate
+							</c:if>
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.quantityTempo, 'low')}">
+			     							<input type="radio"	name="patientsDetails2.quantityTempo" value="low" style="width: 20px;" checked="checked">low
+			    						</c:if>    
+			   							<c:if test="${not fn:contains(patient.patientsDetails2.quantityTempo, 'low')}">
+										 <input type="radio"	name="patientsDetails2.quantityTempo" value="low" style="width: 20px;">low
+							</c:if>
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.quantity"
-								value="Volume (high/moderate/ low)"> Volume <input
-								type="radio" name="patientsDetails2.quantityValume" value="high">high
-							<input type="radio" name="patientsDetails2.quantityValume"
-								value="moderate">moderate <input type="radio"
-								name="patientsDetails2.quantityValume" value="low">low
+							
+								
+							<c:if test="${fn:contains(patient.patientsDetails2.quantity, 'Volume (high/moderate/ low)')}">
+			     							<input type="checkbox" name="patientsDetails2.quantity"
+									value="Volume (high/moderate/ low)" checked="checked"> Volume
+			    						</c:if>    
+			   							<c:if test="${not fn:contains(patient.patientsDetails2.quantity, 'Volume (high/moderate/ low)')}">
+										 <input type="checkbox" name="patientsDetails2.quantity"
+									value="Volume (high/moderate/ low)"> Volume
+							</c:if>
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.quantityValume, 'high')}">
+			     							<input	type="radio" name="patientsDetails2.quantityValume" value="high" style="margin-left: 50px;width: 20px;" checked="checked">high
+			    						</c:if>    
+			   							<c:if test="${not fn:contains(patient.patientsDetails2.quantityValume, 'high')}">
+										 <input	type="radio" name="patientsDetails2.quantityValume" value="high" style="margin-left: 50px;width: 20px;">high
+							</c:if>
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.quantityValume, 'moderate')}">
+			     							<input type="radio" name="patientsDetails2.quantityValume"	value="moderate" style="width: 20px;" checked="checked">moderate
+			    						</c:if>    
+			   							<c:if test="${not fn:contains(patient.patientsDetails2.quantityValume, 'moderate')}">
+										 <input type="radio" name="patientsDetails2.quantityValume"	value="moderate" style="width: 20px;">moderate
+							</c:if>
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.quantityValume, 'low')}">
+			     							<input type="radio"	name="patientsDetails2.quantityValume" value="low" style="width: 20px;" checked="checked">low
+			    						</c:if>    
+			   							<c:if test="${not fn:contains(patient.patientsDetails2.quantityValume, 'low')}">
+										 <input type="radio"	name="patientsDetails2.quantityValume" value="low" style="width: 20px;">low
+							</c:if>
 
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.quantity"
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.quantity, 'Pressure of speech')}">
+		     							<input type="checkbox" name="patientsDetails2.quantity"
+								value="Pressure of speech" checked="checked"> Pressure of speech
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.quantity, 'Pressure of speech')}">
+									 <input type="checkbox" name="patientsDetails2.quantity"
 								value="Pressure of speech"> Pressure of speech
+						   </c:if>
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.quantity"
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.quantity, 'Poverty of speech')}">
+		     							<input type="checkbox" name="patientsDetails2.quantity"
+								value="Poverty of speech" checked="checked"> Poverty of speech
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.quantity, 'Poverty of speech')}">
+									 <input type="checkbox" name="patientsDetails2.quantity"
 								value="Poverty of speech"> Poverty of speech
+						   </c:if>
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.quantity"
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.quantity, 'Mutism')}">
+		     							<input type="checkbox" name="patientsDetails2.quantity"
+								value="Mutism" checked="checked"> Mutism
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.quantity, 'Mutism')}">
+									 <input type="checkbox" name="patientsDetails2.quantity"
 								value="Mutism"> Mutism
+						   </c:if>
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.quantity"
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.quantity, 'Monosyllabic replies')}">
+		     							<input type="checkbox" name="patientsDetails2.quantity"
+								value="Monosyllabic replies" checked="checked"> Monosyllabic replies
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.quantity, 'Monosyllabic replies')}">
+									 <input type="checkbox" name="patientsDetails2.quantity"
 								value="Monosyllabic replies"> Monosyllabic replies
+						   </c:if>
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.quantity"
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.quantity, 'Verbosity')}">
+		     							<input type="checkbox" name="patientsDetails2.quantity"
+								value="Verbosity" checked="checked"> Verbosity
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.quantity, 'Verbosity')}">
+									 <input type="checkbox" name="patientsDetails2.quantity"
 								value="Verbosity"> Verbosity
+						   </c:if>
 						</div>
 					</div>
 				</div>
@@ -884,133 +1095,55 @@ a {
 					<div class="col-3" style="white-space: nowrap;">
 						<label for="patientsDetails2.formandstructure">Form and
 							structure: </label>
-						<div>
-							<input type="checkbox" name="patientsDetails2.formandstructure"
-								value="Nil">Nil
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.formandstructure"
-								value="Neologisms"> Neologisms
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.formandstructure"
-								value="Talking past the point (Vorbeireden)"> Talking
-							past the point (Vorbeireden)
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.formandstructure"
-								value="Aphasia (receptive/intermediate/expressive)">
-							Aphasia (receptive/intermediate/expressive) <input type="text"
-								name="patientsDetails2.aphasiaText" value="">
-
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.formandstructure"
-								value="Word salad"> Word salad
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.formandstructure"
-								value="Clang associations"> Clang associations
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.formandstructure"
-								value="Echolalia"> Echolalia
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.formandstructure"
-								value="Perseveration"> Perseveration
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.formandstructure"
-								value="Flight of ideas"> Flight of ideas
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.formandstructure"
-								value="Incoherence"> Incoherence
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.formandstructure"
-								value="Derailment"> Derailment
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.formandstructure"
-								value="Cluttering"> Cluttering
-						</div>
-					</div>
+							
+							<c:forEach var="frm" items="${formandstructurelist}">
+							<div>	<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.formandstructure, frm)}">
+		     							<input type="checkbox" name="patientsDetails2.formandstructure" value="${frm}" checked="checked"/> ${frm} 
+		    						</c:when>    
+		   							<c:otherwise>
+									 <input type="checkbox" name="patientsDetails2.formandstructure" value="${frm}"/> ${frm} 
+									 </c:otherwise>
+								</c:choose>
+								</div>
+					    </c:forEach>
+ 					</div>
 				</div>
 				<div class="grid">
 					<div class="col-3" style="white-space: nowrap;">
 						<label>8.4 Thought – </label> <label
 							for="patientsDetails2.disorderofstream">Disorders of
 							stream: </label>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofstream"
-								value="Nil">Nil
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofstream"
-								value="Flight of ideas"> Flight of ideas
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofstream"
-								value="Thought blocking"> Thought blocking
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofstream"
-								value="Inhibited / Slowing of thinking"> Inhibited /
-							Slowing of thinking
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofstream"
-								value="Pressure of thought"> Pressure of thought
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofstream"
-								value="perseveration"> perseveration
-						</div>
+							
+							<c:forEach var="frm" items="${disorderofstreamlist}">
+							<div>
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.disorderofstream, frm)}">
+		     							<input type="checkbox" name="patientsDetails2.disorderofstream" value="${frm}" checked="checked"/> ${frm} 
+		    						</c:when>    
+		   							<c:otherwise>
+									 <input type="checkbox" name="patientsDetails2.disorderofstream" value="${frm}"/> ${frm} 
+									 </c:otherwise>
+								</c:choose> </div>
+					    </c:forEach>
 					</div>
 				</div>
 				<div class="grid">
 					<div class="col-3" style="white-space: nowrap;">
 						<label for="patientsDetails2.disorderofform">Disorders of
 							form: </label>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofform"
-								value="Nil">Nil
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofform"
-								value="Loosening of associations"> Loosening of
-							associations
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofform"
-								value="Incoherence"> Incoherence
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofform"
-								value="Derailment"> Derailment
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofform"
-								value="Circumstantiality"> Circumstantiality
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofform"
-								value="Tangentiality"> Tangentiality
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofform"
-								value="Perseveration"> Perseveration
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofform"
-								value="Verbigeration"> Verbigeration
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.disorderofform"
-								value="Thought fragmentation"> Thought fragmentation
-						</div>
+							
+						<c:forEach var="frm" items="${disorderofformlist}">
+							<div>
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.disorderofform, frm)}">
+		     							<input type="checkbox" name="patientsDetails2.disorderofform" value="${frm}" checked="checked"/> ${frm} 
+		    						</c:when>    
+		   							<c:otherwise>
+									 <input type="checkbox" name="patientsDetails2.disorderofform" value="${frm}"/> ${frm} 
+									 </c:otherwise>
+								</c:choose> </div>
+					    </c:forEach>
 					</div>
 				</div>
 				<div class="grid">
@@ -1018,92 +1151,208 @@ a {
 						<label for="patientsDetails2.contentofthought">Content of
 							Thought:</label>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Obsessions& compulsions')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Obsessions& compulsions" checked="checked"> Obsessions& compulsions 
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Obsessions& compulsions')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
 								value="Obsessions& compulsions"> Obsessions& compulsions
-							<input type="text" id="contentofthought" name="contentofthought">
+									 </c:if>	
+							<input type="text" id="obsessioncompulsionstext" name="obsessioncompulsionstext" value="${patient.patientsDetails2.obsessioncompulsionstext}">
 						</div>
 
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="Thought alienation"> Thought alienation <input
-								type="text" id="thoughtalienation" name="thoughtalienation">
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Thought alienation')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Thought alienation" checked="checked"> Thought alienation  
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Thought alienation')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Thought alienation"> Thought alienation 
+							</c:if>	
+							<input
+								type="text" id="thoughtalienation" name="thoughtalienation" value="${patient.patientsDetails2.thoughtalienation}">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" checked="checked"
 								value="Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)">
-							Delusions (primary and secondary; persecutory, grandiose,
-							referential, guilt, poverty, infidelity, love, illhealth,
-							nihilisticetc.)
-							<input type="text" id="delusionstext" name="delusionstext">
+							Delusions (primary and secondary; persecutory, grandiose,referential, guilt, poverty, <br>
+							<span style="margin-left: 210px;"> infidelity, love, illhealth,nihilisticetc.) </span>  
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)">
+							Delusions (primary and secondary; persecutory, grandiose,referential, guilt, poverty, <br>
+							<span style="margin-left: 210px;"> infidelity, love, illhealth,nihilisticetc.) </span>
+							</c:if>	
+							
+							<input type="text" id="delusionstext" name="delusionstext" value="${patient.patientsDetails2.delusionstext}">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="Overvalued ideas"> Overvalued ideas <input
-								type="text" id="overvaluedideastext" name="overvaluedideastext">
+							
+								
+						<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Overvalued ideas')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" checked="checked"
+								value="Overvalued ideas"> Overvalued ideas
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Overvalued ideas')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Overvalued ideas"> Overvalued ideas
+							</c:if>	
+								
+						 <input
+								type="text" id="overvaluedideastext" name="overvaluedideastext" value="${patient.patientsDetails2.overvaluedideastext}">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="Phobias"> Phobias <input type="text"
-								id="phobiastext" name="phobiastext">
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Phobias')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" checked="checked"
+								value="Phobias"> Phobias
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Phobias')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Phobias"> Phobias
+							</c:if>	
+					    	<input type="text"
+								id="phobiastext" name="phobiastext" value="${patient.patientsDetails2.phobiastext}">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="Overvalued ideas"> Overvalued ideas <input
-								type="text" id="overvaluedideastext" name="overvaluedideastext">
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
+							 
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Depressive Cognitions (hopelessness, helplessness, worthlessness):')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" checked="checked"
 								value="Depressive Cognitions (hopelessness, helplessness, worthlessness):">
 							Depressive Cognitions (hopelessness, helplessness,
-							worthlessness): <input type="text" id="deressivecongnitionstext"
-								name="deressivecongnitionstext">
+							worthlessness):
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Depressive Cognitions (hopelessness, helplessness, worthlessness):')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Depressive Cognitions (hopelessness, helplessness, worthlessness):">
+							Depressive Cognitions (hopelessness, helplessness,
+							worthlessness):
+							</c:if>	
+							<input type="text" id="deressivecongnitionstext"
+								name="deressivecongnitionstext" value="${patient.patientsDetails2.deressivecongnitionstext}" style="width:150px;">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="Guilt"> Guilt <input type="text" id="guilttext"
-								name="guilttext">
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Guilt')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Guilt" checked="checked"> Guilt
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Guilt')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Guilt"> Guilt
+							</c:if>	
+							
+							 <input type="text" id="guilttext"
+								name="guilttext" value="${patient.patientsDetails2.guilttext}">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="Worries"> Worries <input type="text"
-								id="worriestext" name="worriestext">
+							 
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Worries')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Worries" checked="checked"> Worries
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Worries')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Worries"> Worries
+							</c:if>		
+							<input type="text"
+								id="worriestext" name="worriestext" value="${patient.patientsDetails2.worriestext}">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="Catastrophic"> Catastrophic <input type="text"
-								id="catastrophictext" name="catastrophictext">
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Catastrophic')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Catastrophic" checked="checked"> Catastrophic
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Catastrophic')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Catastrophic"> Catastrophic
+							</c:if>	
+							 <input type="text"
+								id="catastrophictext" name="catastrophictext" value="${patient.patientsDetails2.catastrophictext}">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="Suicidal"> Suicidal <input type="text"
-								id="suicidaltext" name="suicidaltext">
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Suicidal')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Suicidal" checked="checked"> Suicidal
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Suicidal')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Suicidal"> Suicidal
+							</c:if>	
+							 <input type="text"
+								id="suicidaltext" name="suicidaltext" value="${patient.patientsDetails2.suicidaltext}">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="homicidal ideation"> homicidal ideation <input
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'homicidal ideation')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="homicidal ideation" checked="checked"> homicidal ideation
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'homicidal ideation')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="homicidal ideation"> homicidal ideation
+							</c:if>		
+							<input
 								type="text" id="homicidalideationtext"
-								name="homicidalideationtext">
+								name="homicidalideationtext" value="${patient.patientsDetails2.homicidalideationtext}">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="Magical thinking"> Magical thinking <input
-								type="text" id="magicalthinkingtext" name="magicalthinkingtext">
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Magical thinking')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Magical thinking" checked="checked"> Magical thinking
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Magical thinking')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Magical thinking"> Magical thinking
+							</c:if>	
+							 <input
+								type="text" id="magicalthinkingtext" name="magicalthinkingtext" value="${patient.patientsDetails2.magicalthinkingtext}">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="Ideas of reference"> Ideas of reference <input
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Ideas of reference')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Ideas of reference" checked="checked"> Ideas of reference
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Ideas of reference')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Ideas of reference"> Ideas of reference
+							</c:if>		
+						    <input
 								type="text" id="ideasofreferencetext"
-								name="ideasofreferencetext">
+								name="ideasofreferencetext" value="${patient.patientsDetails2.ideasofreferencetext}">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="Persecutory ideas"> Persecutory ideas <input
-								type="text" id="persecutoryidastext" name="persecutoryidastext">
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Persecutory ideas')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Persecutory ideas" checked="checked"> Persecutory ideas
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Persecutory ideas')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Persecutory ideas"> Persecutory ideas
+							</c:if>	
+							<input
+								type="text" id="persecutoryidastext" name="persecutoryidastext" value="${patient.patientsDetails2.persecutoryidastext}">
 						</div>
 						<div>
-							<input type="checkbox" name="patientsDetails2.contentofthought"
-								value="Others"> Others <input type="text"
-								id="persecutoryidastext" name="othersText">
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Others')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Others" checked="checked"> Others
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.contentofthought, 'Others')}">
+									 <input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Others"> Others
+							</c:if>	
+						 <input type="text"
+								id="othersText" name="othersText" value="${patient.patientsDetails2.othersText}">
 						</div>
 					</div>
 				</div>
@@ -1111,194 +1360,87 @@ a {
 					<div class="col-3" style="white-space: nowrap;">
 						<label for="patientsDetails2.possessionofthought">Possession
 							of Thought:</label>
-						<div>
-							<input type="checkbox"
-								name="patientsDetails2.possessionofthought" value="Nil">
-							Nil
-						</div>
-						<div>
-							<input type="checkbox"
-								name="patientsDetails2.possessionofthought"
-								value="Thought insertion"> Thought insertion
-						</div>
-						<div>
-							<input type="checkbox"
-								name="patientsDetails2.possessionofthought"
-								value="Thought withdrawal"> Thought withdrawal
-						</div>
-						<div>
-							<input type="checkbox"
-								name="patientsDetails2.possessionofthought"
-								value="Thought broadcasting"> Thought broadcasting
-						</div>
-						<div>
-							<input type="checkbox"
-								name="patientsDetails2.possessionofthought" value="Thought echo">
-							Thought echo
-						</div>
+							
+					<c:forEach var="frm" items="${possessionofthoughtlist}">
+							<div>
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.possessionofthought, frm)}">
+		     							<input type="checkbox" name="patientsDetails2.possessionofthought" value="${frm}" checked="checked"/> ${frm} 
+		    						</c:when>    
+		   							<c:otherwise>
+									 <input type="checkbox" name="patientsDetails2.possessionofthought" value="${frm}"/> ${frm} 
+									 </c:otherwise>
+								</c:choose> </div>
+					    </c:forEach>		
 					</div>
 				</div>
 				<div class="grid">
 					<div class="col-3" style="white-space: nowrap;">
 						<label>8.5 Mood and Affect –</label> <label
 							for="patientsDetails2.mood">Mood (subjective):</label>
-						<div>
-							<input type="checkbox" name="patientsDetails2.mood"
-								value="Depressive"> Depressive
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.mood"
-								value="Elated / euphoric"> Elated / euphoric
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.mood"
-								value="Anxious"> Anxious
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.mood"
-								value="Irritable"> Irritable
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.mood"
-								value="Apathy"> Apathy
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.mood"
-								value="Fearful"> Fearful
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.mood"
-								value="Dysphoria"> Dysphoria
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.mood"
-								value="Lability"> Lability
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.mood"
-								value="Euthymic"> euthymic
-						</div>
+						<c:forEach var="frm" items="${moodlist}">
+							<div>
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.mood, frm)}">
+		     							<input type="checkbox" name="patientsDetails2.mood" value="${frm}" checked="checked"/> ${frm} 
+		    						</c:when>    
+		   							<c:otherwise>
+									 <input type="checkbox" name="patientsDetails2.mood" value="${frm}"/> ${frm} 
+									 </c:otherwise>
+								</c:choose> </div>
+					    </c:forEach>		
 					</div>
 				</div>
 				<div class="grid">
 					<div class="col-3" style="white-space: nowrap;">
 						<label for="patientsDetails2.affect">Affect (objective):</label>
-						<div>
-							<input type="checkbox" name="patientsDetails2.affect"
-								value="Blunted"> Blunted
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.affect"
-								value="Flat"> Flat
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.affect"
-								value="Inappropriate"> Inappropriate
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.affect"
-								value="Restricted"> Restricted
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.affect"
-								value="Labile"> Labile
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.affect"
-								value="Congruent / incongruent with mood"> Congruent /
-							incongruent with mood
-						</div>
+						
+						<c:forEach var="frm" items="${affectlist}">
+							<div>
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.affect, frm)}">
+		     							<input type="checkbox" name="patientsDetails2.affect" value="${frm}" checked="checked"/> ${frm} 
+		    						</c:when>    
+		   							<c:otherwise>
+									 <input type="checkbox" name="patientsDetails2.affect" value="${frm}"/> ${frm} 
+									 </c:otherwise>
+								</c:choose> </div>
+					    </c:forEach>
 					</div>
 				</div>
 				<div class="grid">
 					<div class="col-3" style="white-space: nowrap;">
 						<label for="patientsDetails2.perception">8.7 Perception –
 						</label>
-						<div>
-							<input type="checkbox" name="patientsDetails2.perception"
-								value="Auditory Hallucinations"> Auditory Hallucinations
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.perception"
-								value="Visual Hallucinations"> Visual Hallucinations
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.perception"
-								value="Olfactory Hallucinations"> Olfactory
-							Hallucinations
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.perception"
-								value="Gustatory Hallucinations"> Gustatory
-							Hallucinations
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.perception"
-								value="Tactile Hallucinations"> Tactile Hallucinations
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.perception"
-								value="Pseudo-hallucinations"> Pseudo-hallucinations
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.perception"
-								value="Illusions"> Illusions
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.perception"
-								value="Depersonalization"> Depersonalization
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.perception"
-								value="Derealization"> Derealization
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.perception"
-								value="Functional hallucinations/"> Functional
-							hallucinations/
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.perception"
-								value="Reflex hallucinations"> Reflex hallucinations
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.perception"
-								value="Nil"> Nil
-						</div>
+						
+						<c:forEach var="frm" items="${perceptionlist}">
+							<div>
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.perception, frm)}">
+		     							<input type="checkbox" name="patientsDetails2.perception" value="${frm}" checked="checked"/> ${frm} 
+		    						</c:when>    
+		   							<c:otherwise>
+									 <input type="checkbox" name="patientsDetails2.perception" value="${frm}"/> ${frm} 
+									 </c:otherwise>
+								</c:choose> </div>
+					    </c:forEach>
 					</div>
 				</div>
 				<div class="grid">
 					<div class="col-3" style="white-space: nowrap;">
 						<label>8.7 Cognition –</label> <label
 							for="patientsDetails2.consciousness">Consciousness: </label>
-						<div>
-							<input type="checkbox" name="patientsDetails2.consciousness"
-								value="Alert"> Alert
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.consciousness"
-								value="Drowsy"> Drowsy
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.consciousness"
-								value="Stuporous"> Stuporous
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.consciousness"
-								value="Conscious"> Conscious
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.consciousness"
-								value="Clouding"> Clouding
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.consciousness"
-								value="Confusion"> Confusion
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.consciousness"
-								value="Coma / stupor"> Coma / stupor
-						</div>
+						<c:forEach var="frm" items="${consciousnesslist}">
+							<div>
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.consciousness, frm)}">
+		     							<input type="checkbox" name="patientsDetails2.consciousness" value="${frm}" checked="checked"/> ${frm} 
+		    						</c:when>    
+		   							<c:otherwise>
+									 <input type="checkbox" name="patientsDetails2.consciousness" value="${frm}"/> ${frm} 
+									 </c:otherwise>
+								</c:choose> </div>
+					    </c:forEach>
 					</div>
 				</div>
 				<div class="grid">
@@ -1308,33 +1450,59 @@ a {
 							<tr style="width: 758px; height: 25px;">
 								<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Time:
 								</b></td>
-								<td style="width: 231px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.time" value="Intact"
-									style="width: 45px;">Intact</td>
-								<td style="width: 322px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.time" value="Impaired"
-									style="width: 45px;">Impaired</td>
+								<c:forEach var="frm" items="${timelist}">
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.time, frm)}">
+		     							<td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.time" value="${frm}"
+									style="width: 45px;" checked="checked">${frm}</td>
+		    						</c:when>    
+		   							<c:otherwise>
+									 <td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.time" value="${frm}"
+									style="width: 45px;">${frm}</td>
+									 </c:otherwise>
+								</c:choose>
+					   			</c:forEach>
 							</tr>
 
 							<tr style="width: 758px; height: 25px;">
 								<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Place
 										: </b></td>
-								<td style="width: 231px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.place" value="Intact"
-									style="width: 45px;">Intact</td>
-								<td style="width: 322px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.place" value="Impaired"
-									style="width: 45px;">Impaired</td>
+							
+							<c:forEach var="frm" items="${placelist}">
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.place, frm)}">
+		     							<td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.place" value="${frm}"
+									style="width: 45px;" checked="checked">${frm}</td>
+		    						</c:when>    
+		   							<c:otherwise>
+									 <td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.place" value="${frm}"
+									style="width: 45px;">${frm}</td>
+									 </c:otherwise>
+								</c:choose>
+					   			</c:forEach>			
 							</tr>
 							<tr style="width: 758px; height: 25px;">
 								<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Person
 										: </b></td>
-								<td style="width: 231px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.person" value="Intact"
-									style="width: 45px;">Intact</td>
-								<td style="width: 322px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.person" value="Impaired"
-									style="width: 45px;">Impaired</td>
+										
+							<c:forEach var="frm" items="${personlist}">
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.person, frm)}">
+		     							<td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.person" value="${frm}"
+									style="width: 45px;" checked="checked">${frm}</td>
+		    						</c:when>    
+		   							<c:otherwise>
+									 <td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.person" value="${frm}"
+									style="width: 45px;">${frm}</td>
+									 </c:otherwise>
+								</c:choose>
+					   			</c:forEach>			
 							</tr>
 						</table>
 					</div>
@@ -1343,25 +1511,19 @@ a {
 					<div class="col-3" style="white-space: nowrap;">
 						<label for="patientsDetails2.attentionconcentration">Attention
 							and concentration: </label>
-						<div>
-							<input type="checkbox"
-								name="patientsDetails2.attentionconcentration" value="Adequate">Adequate
-						</div>
-						<div>
-							<input type="checkbox"
-								name="patientsDetails2.attentionconcentration"
-								value="Distractibility">Distractibility
-						</div>
-						<div>
-							<input type="checkbox"
-								name="patientsDetails2.attentionconcentration"
-								value="Impaired concentration">Impaired concentration
-						</div>
-						<div>
-							<input type="checkbox"
-								name="patientsDetails2.attentionconcentration"
-								value="Hypervigilance">Hypervigilance
-						</div>
+							
+						<c:forEach var="frm" items="${attentionconcentrationlist}">
+							<div>	<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.attentionconcentration, frm)}">
+		     							<input type="checkbox"
+								name="patientsDetails2.attentionconcentration" value="${frm}" checked="checked">${frm}
+		    						</c:when>    
+		   							<c:otherwise>
+									 <input type="checkbox"
+								name="patientsDetails2.attentionconcentration" value="${frm}">${frm}
+									 </c:otherwise>
+								</c:choose> </div>
+					   			</c:forEach>	
 					</div>
 				</div>
 				<div class="grid">
@@ -1371,104 +1533,139 @@ a {
 							<tr style="width: 758px; height: 25px;">
 								<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Immediate:
 								</b></td>
-								<td style="width: 231px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.immediate"
-									value="Intact" style="width: 45px;">Intact</td>
-								<td style="width: 322px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.immediate"
-									value="Impaired" style="width: 45px;">Impaired</td>
+								
+								<c:forEach var="frm" items="${immediatelist}">
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.immediate, frm)}">
+		     							<td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.immediate" value="${frm}"
+									style="width: 45px;" checked="checked">${frm}</td>
+		    						</c:when>    
+		   							<c:otherwise>
+									 <td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.immediate" value="${frm}"
+									style="width: 45px;">${frm}</td>
+									 </c:otherwise>
+								</c:choose>
+					   			</c:forEach>
 							</tr>
 
 							<tr style="width: 758px; height: 25px;">
 								<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Recent
 										: </b></td>
-								<td style="width: 231px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.recent" value="Intact"
-									style="width: 45px;">Intact</td>
-								<td style="width: 322px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.recent" value="Impaired"
-									style="width: 45px;">Impaired</td>
+								<c:forEach var="frm" items="${recentlist}">
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.recent, frm)}">
+		     							<td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.recent" value="${frm}"
+									style="width: 45px;" checked="checked">${frm}</td>
+		    						</c:when>    
+		   							<c:otherwise>
+									 <td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.recent" value="${frm}"
+									style="width: 45px;">${frm}</td>
+									 </c:otherwise>
+								</c:choose>
+					   			</c:forEach>
 							</tr>
 							<tr style="width: 758px; height: 25px;">
 								<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Remote
 										: </b></td>
-								<td style="width: 231px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.remote" value="Intact"
-									style="width: 45px;">Intact</td>
-								<td style="width: 322px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.remote" value="Impaired"
-									style="width: 45px;">Impaired</td>
+										
+								<c:forEach var="frm" items="${remotelist}">
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.remote, frm)}">
+		     							<td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.remote" value="${frm}"
+									style="width: 45px;" checked="checked">${frm}</td>
+		    						</c:when>    
+		   							<c:otherwise>
+									 <td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.remote" value="${frm}"
+									style="width: 45px;">${frm}</td>
+									 </c:otherwise>
+								</c:choose>
+					   			</c:forEach>
 							</tr>
 							<tr style="width: 758px; height: 25px;">
 								<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Amnesia
 										: </b></td>
-								<td style="width: 231px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.amnesia"
-									value="Anterograde" style="width: 45px;">Anterograde</td>
-								<td style="width: 322px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.amnesia"
-									value="Retrograde" style="width: 45px;">Retrograde</td>
+										
+								<c:forEach var="frm" items="${amnesialist}">
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.amnesia, frm)}">
+		     							<td style="width: 322px; height: 25px"><input
+									type="checkbox" name="patientsDetails2.amnesia" value="${frm}"
+									style="width: 45px;" checked="checked">${frm}</td>
+		    						</c:when>    
+		   							<c:otherwise>
+									 <td style="width: 322px; height: 25px">
+									 <input
+									type="checkbox" name="patientsDetails2.amnesia" value="${frm}"
+									style="width: 45px;">${frm}</td>
+									 </c:otherwise>
+								</c:choose>
+					   			</c:forEach>
 							</tr>
 						</table>
 					</div>
 				</div>
 				<div class="grid">
 					<div class="col-3" style="white-space: nowrap;">
-						<div>
-							<input type="checkbox" name="patientsDetails2.memory"
-								value="Confabulation">Confabulation
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.memory"
-								value="Paramnesia (déjà vu, jamais vu)">Paramnesia (déjà
-							vu, jamais vu)
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.memory"
-								value="Hypermnesia">Hypermnesia
-						</div>
+					
+					<c:forEach var="frm" items="${memorylist}">
+						<div>		<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.memory, frm)}">
+		     							<input
+									type="checkbox" name="patientsDetails2.memory" value="${frm}"
+									checked="checked">${frm}
+		    						</c:when>    
+		   							<c:otherwise>
+								 <input
+									type="checkbox" name="patientsDetails2.memory" value="${frm}"
+									>${frm}
+									 </c:otherwise>
+								</c:choose> </div>
+					   			</c:forEach>
 					</div>
 				</div>
 				<div class="grid">
 					<div class="col-3" style="white-space: nowrap;">
 						<label for="patientsDetails2.thinking">Thinking: </label>
-						<div>
-							<input type="checkbox" name="patientsDetails2.thinking"
-								value="Abstract Level">Abstract Level
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.thinking"
-								value="Concrete thinking">Concrete thinking
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.thinking"
-								value="Impaired reasoning">Impaired reasoning
-						</div>
+						<c:forEach var="frm" items="${thinkinglist}">
+						<div>		<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.thinking, frm)}">
+		     							<input
+									type="checkbox" name="patientsDetails2.thinking" value="${frm}"
+									checked="checked">${frm}
+		    						</c:when>    
+		   							<c:otherwise>
+								 <input
+									type="checkbox" name="patientsDetails2.thinking" value="${frm}"
+									>${frm}
+									 </c:otherwise>
+								</c:choose> </div>
+					   			</c:forEach>
 					</div>
 				</div>
 				<div class="grid">
 					<div class="col-3" style="white-space: nowrap;">
 						<label for="patientsDetails2.emotion">Emotion: </label>
-						<div>
-							<input type="checkbox" name="patientsDetails2.emotion"
-								value="Normal Emotional reactions">Normal Emotional
-							reactions
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.emotion"
-								value="Abnormal emotional reactions">Abnormal emotional
-							reactions
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.emotion"
-								value="Abnormal expressions of emotion">Abnormal
-							expressions of emotion
-						</div>
-						<div>
-							<input type="checkbox" name="patientsDetails2.emotion"
-								value="Morbid expressions of emotion">Morbid expressions
-							of emotion
-						</div>
+						
+						<c:forEach var="frm" items="${emotionlist}">
+						<div>		<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.emotion, frm)}">
+		     							<input
+									type="checkbox" name="patientsDetails2.emotion" value="${frm}"
+									checked="checked">${frm}
+		    						</c:when>    
+		   							<c:otherwise>
+								 <input
+									type="checkbox" name="patientsDetails2.emotion" value="${frm}"
+									>${frm}
+									 </c:otherwise>
+								</c:choose> </div>
+					   			</c:forEach>
 					</div>
 				</div>
 				<div class="grid">
@@ -1478,33 +1675,63 @@ a {
 							<tr style="width: 758px; height: 25px;">
 								<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Personal:
 								</b></td>
-								<td style="width: 231px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.judgementpersonal"
-									value="Intact" style="width: 45px;">&nbsp;Intact</td>
-								<td style="width: 322px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.judgementpersonal"
-									value="Impaired" style="width: 45px;">Impaired</td>
+								
+								<c:forEach var="frm" items="${judgementpersonallist}">
+								
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.judgementpersonal, frm)}">
+		     						<td style="width: 322px; height: 25px">	<input
+									type="checkbox" name="patientsDetails2.judgementpersonal" value="${frm}"
+									checked="checked" style="width: 45px;">${frm} </td>
+		    						</c:when>    
+		   							<c:otherwise>
+									<td style="width: 322px; height: 25px"> 
+								 <input
+									type="checkbox" name="patientsDetails2.judgementpersonal" value="${frm}"
+									style="width: 45px;">${frm} </td>
+									 </c:otherwise>
+								</c:choose> 
+					   			</c:forEach>
 							</tr>
 
 							<tr style="width: 758px; height: 25px;">
 								<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Social
 										: </b></td>
-								<td style="width: 231px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.judgementsocial"
-									value="Intact" style="width: 45px;">Intact</td>
-								<td style="width: 322px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.judgementsocial"
-									value="Impaired" style="width: 45px;">Impaired</td>
+								<c:forEach var="frm" items="${judgementsociallist}">
+								<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.judgementsocial, frm)}">
+		     						<td style="width: 322px; height: 25px">	<input
+									type="checkbox" name="patientsDetails2.judgementsocial" value="${frm}"
+									checked="checked" style="width: 45px;">${frm} </td>
+		    						</c:when>    
+		   							<c:otherwise>
+									 <td style="width: 322px; height: 25px">
+								 <input
+									type="checkbox" name="patientsDetails2.judgementsocial" value="${frm}"
+									style="width: 45px;">${frm} </td>
+									 </c:otherwise>
+								</c:choose> 
+					   			</c:forEach>
 							</tr>
 							<tr style="width: 758px; height: 25px;">
 								<td style="width: 150px; height: 25px">&nbsp;&nbsp;<b>Test
 										: </b></td>
-								<td style="width: 231px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.judgementtest"
-									value="Intact" style="width: 45px;">Intact</td>
-								<td style="width: 322px; height: 25px"><input
-									type="checkbox" name="patientsDetails2.judgementtest"
-									value="Impaired" style="width: 45px;">Impaired</td>
+							<c:forEach var="frm" items="${judgementtestlist}">
+							 <td style="width: 322px; height: 25px">	
+							 	<c:choose>
+		    						<c:when test="${fn:contains(patient.patientsDetails2.judgementtest, frm)}">
+		     						<input
+									type="checkbox" name="patientsDetails2.judgementtest" value="${frm}"
+									checked="checked" style="width: 45px;">${frm} 
+		    						</c:when>    
+		   							<c:otherwise>
+								 <input
+									type="checkbox" name="patientsDetails2.judgementtest" value="${frm}"
+									style="width: 45px;">${frm} 
+									 </c:otherwise>
+									
+								</c:choose>  </td>
+					   			</c:forEach>
 							</tr>
 						</table>
 					</div>
@@ -1512,65 +1739,113 @@ a {
 				<div class="grid">
 					<div class="col-12">
 						<label for="patientsDetails2.thinking">8.8 Insight – </label>
-						<table>
-							<tr>
-								<td><input type="checkbox" name="patientsDetails2.insight"
-									value="Level 1. Complete denial of illness
+					<table>
+				 <tr>
+					<td>
+								
+						<c:if test="${fn:contains(patient.patientsDetails2.insight, 'Level 1. Complete denial of illness
+								The individual totally denies being ill, even when clear symptoms or dysfunction are present. Common in psychosis or anosognosia.')}">
+		     				<input type="checkbox" name="patientsDetails2.insight" value="Level 1. Complete denial of illness
 								The individual totally denies being ill, even when clear symptoms or dysfunction are present. Common in psychosis or anosognosia."
-									style="width: 50px;"></td>
-								<td style="width: 750px;"><b>Level 1.</b> Complete denial
-									of illness <br /> The individual totally denies being ill,
-									even when clear symptoms or dysfunction are present. Common in
-									psychosis or anosognosia.</td>
-							</tr>
-							<tr>
-								<td><input type="checkbox" name="patientsDetails2.insight"
-									value="Level 2. Slight awareness of being sick and needing help, but denying it at the same time
+								style="width: 50px;" checked="checked">
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.insight, 'Level 1. Complete denial of illness
+								The individual totally denies being ill, even when clear symptoms or dysfunction are present. Common in psychosis or anosognosia.')}">
+									 <input type="checkbox" name="patientsDetails2.insight" value="Level 1. Complete denial of illness
+								The individual totally denies being ill, even when clear symptoms or dysfunction are present. Common in psychosis or anosognosia."
+								style="width: 50px;">
+						 </c:if>
+					</td>
+					<td style="width: 750px;"><b>Level 1.</b> Complete denial of illness <br/>
+						 		The individual totally denies being ill, even when clear symptoms or dysfunction are present. Common in psychosis or anosognosia.</td>
+				</tr>
+				<tr>
+					<td>
+						<c:if test="${fn:contains(patient.patientsDetails2.insight, 'Level 2. Slight awareness of being sick and needing help, but denying it at the same time
+							The person may express minor doubts or complaints but immediately dismisses the idea of needing psychiatric help.')}">
+		     				<input type="checkbox" name="patientsDetails2.insight" value="Level 2. Slight awareness of being sick and needing help, but denying it at the same time
 							The person may express minor doubts or complaints but immediately dismisses the idea of needing psychiatric help."
-									style="width: 50px;"></td>
-								<td style="width: 750px;"><b>Level 2.</b> Slight awareness
-									of being sick and needing help, but denying it at the same time
-									The person may express minor doubts or complaints but
-									immediately dismisses the idea of needing psychiatric help.</td>
-							</tr>
-							<tr>
-								<td><input type="checkbox" name="patientsDetails2.insight"
-									value="Level 3. Awareness of being sick but blaming it on external factors
+							style="width: 50px;" checked="checked">
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.insight, 'Level 2. Slight awareness of being sick and needing help, but denying it at the same time
+							The person may express minor doubts or complaints but immediately dismisses the idea of needing psychiatric help.')}">
+									 <input type="checkbox" name="patientsDetails2.insight" value="Level 2. Slight awareness of being sick and needing help, but denying it at the same time
+							The person may express minor doubts or complaints but immediately dismisses the idea of needing psychiatric help."
+							style="width: 50px;">
+						 </c:if>
+					</td>
+					<td style="width: 750px;"><b>Level 2.</b> Slight awareness of being sick and needing help, but denying it at the same time
+							The person may express minor doubts or complaints but immediately dismisses the idea of needing psychiatric help.</td>
+				</tr>
+				<tr>
+					<td>
+						<c:if test="${fn:contains(patient.patientsDetails2.insight, 'Level 3. Awareness of being sick but blaming it on external factors
+							The illness is acknowledged, but the cause is attributed to external stressors, people, or circumstances—e.g., “It’s because of my boss..')}">
+		     				<input type="checkbox" name="patientsDetails2.insight" value="Level 3. Awareness of being sick but blaming it on external factors
 							The illness is acknowledged, but the cause is attributed to external stressors, people, or circumstances—e.g., “It’s because of my boss.."
-									style="width: 50px;"></td>
-								<td style="width: 750px;"><b>Level 3.</b> Awareness of
-									being sick but blaming it on external factors The illness is
-									acknowledged, but the cause is attributed to external
-									stressors, people, or circumstances—e.g., “It’s because of my
-									boss.”</td>
-							<tr>
-								<td><input type="checkbox" name="patientsDetails2.insight"
-									value="Level 4. Awareness that illness is due to something unknown in oneself
+							style="width: 50px;" checked="checked">
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.insight, 'Level 3. Awareness of being sick but blaming it on external factors
+							The illness is acknowledged, but the cause is attributed to external stressors, people, or circumstances—e.g., “It’s because of my boss..')}">
+									 <input type="checkbox" name="patientsDetails2.insight" value="Level 3. Awareness of being sick but blaming it on external factors
+							The illness is acknowledged, but the cause is attributed to external stressors, people, or circumstances—e.g., “It’s because of my boss.."
+							style="width: 50px;">
+						 </c:if>
+					</td>
+					<td style="width: 750px;"><b>Level 3.</b> Awareness of being sick but blaming it on external factors
+							The illness is acknowledged, but the cause is attributed to external stressors, people, or circumstances—e.g., “It’s because of my boss.” </td>
+				<tr>
+					<td>
+						<c:if test="${fn:contains(patient.patientsDetails2.insight, 'Level 4. Awareness that illness is due to something unknown in oneself
+							The individual admits that the problem may be internal but cannot clearly define or understand what it is.')}">
+		     				<input type="checkbox" name="patientsDetails2.insight" value="Level 4. Awareness that illness is due to something unknown in oneself
 							The individual admits that the problem may be internal but cannot clearly define or understand what it is."
-									style="width: 50px;"></td>
-								<td style="width: 750px;"><b>Level 4.</b> Awareness that
-									illness is due to something unknown in oneself The individual
-									admits that the problem may be internal but cannot clearly
-									define or understand what it is.</td>
-							<tr>
-								<td><input type="checkbox" name="patientsDetails2.insight"
-									value="Level 5. Intellectual insight
+							style="width: 50px;" checked="checked">
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.insight, 'Level 4. Awareness that illness is due to something unknown in oneself
+							The individual admits that the problem may be internal but cannot clearly define or understand what it is.')}">
+									 <input type="checkbox" name="patientsDetails2.insight" value="Level 4. Awareness that illness is due to something unknown in oneself
+							The individual admits that the problem may be internal but cannot clearly define or understand what it is."
+							style="width: 50px;">
+						 </c:if>
+					</td>
+					<td style="width: 750px;"><b>Level 4.</b> Awareness that illness is due to something unknown in oneself
+							The individual admits that the problem may be internal but cannot clearly define or understand what it is. </td>
+				<tr>
+					<td>
+						<c:if test="${fn:contains(patient.patientsDetails2.insight, 'Level 5. Intellectual insight
+							Recognizes the illness, its psychological nature, and causes, but this understanding is not integrated into emotional or behavioral change.')}">
+		     				<input type="checkbox" name="patientsDetails2.insight" value="Level 5. Intellectual insight
 							Recognizes the illness, its psychological nature, and causes, but this understanding is not integrated into emotional or behavioral change."
-									style="width: 50px;"></td>
-								<td style="width: 750px;"><b>Level 5.</b> Intellectual
-									insight Recognizes the illness, its psychological nature, and
-									causes, but this understanding is not integrated into emotional
-									or behavioral change.</td>
-							<tr>
-								<td><input type="checkbox" name="patientsDetails2.insight"
-									value="Level 6. True emotional insight
-							Full recognition and emotional acceptance of the illness, leading to meaningful change in behavior, attitude, and coping mechanisms.">
-								<td style="width: 750px;"><b>Level 6.</b> True emotional
-									insight Full recognition and emotional acceptance of the
-									illness, leading to meaningful change in behavior, attitude,
-									and coping mechanisms.</td>
-							</tr>
-						</table>
+							style="width: 50px;" checked="checked">
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.insight, 'Level 5. Intellectual insight
+							Recognizes the illness, its psychological nature, and causes, but this understanding is not integrated into emotional or behavioral change.')}">
+									 <input type="checkbox" name="patientsDetails2.insight" value="Level 5. Intellectual insight
+							Recognizes the illness, its psychological nature, and causes, but this understanding is not integrated into emotional or behavioral change."
+							style="width: 50px;">
+						 </c:if>
+					</td>
+					<td style="width: 750px;"><b>Level 5.</b> Intellectual insight
+							Recognizes the illness, its psychological nature, and causes, but this understanding is not integrated into emotional or behavioral change. </td>
+				<tr>
+					<td>
+						<c:if test="${fn:contains(patient.patientsDetails2.insight, 'Level 6. True emotional insight
+							Full recognition and emotional acceptance of the illness, leading to meaningful change in behavior, attitude, and coping mechanisms.')}">
+		     				<input type="checkbox" name="patientsDetails2.insight" value="Level 6. True emotional insight
+							Full recognition and emotional acceptance of the illness, leading to meaningful change in behavior, attitude, and coping mechanisms." style="width: 50px;"
+							 checked="checked">
+		    						</c:if>    
+		   							<c:if test="${not fn:contains(patient.patientsDetails2.insight, 'Level 6. True emotional insight
+							Full recognition and emotional acceptance of the illness, leading to meaningful change in behavior, attitude, and coping mechanisms.')}">
+									 <input type="checkbox" name="patientsDetails2.insight" value="Level 6. True emotional insight
+							Full recognition and emotional acceptance of the illness, leading to meaningful change in behavior, attitude, and coping mechanisms." style="width: 50px;">
+						 </c:if>
+					</td>
+					<td style="width: 750px;"><b>Level 6.</b> True emotional insight
+							Full recognition and emotional acceptance of the illness, leading to meaningful change in behavior, attitude, and coping mechanisms. </td>
+				</tr>			
+				</table>
 					</div>
 				</div>
 				<div class="grid">

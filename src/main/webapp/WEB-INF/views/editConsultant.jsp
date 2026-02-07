@@ -50,7 +50,7 @@ function myFunction() {
 				Name Title:<input type="text" id="consultantTitle" name="consultantTitle" value="${consultantUser.consultantTitle}" required="required"/>
 				First Name:<input type="text" id="consultantFirstName" name="consultantFirstName" value="${consultantUser.consultantFirstName}" required="required"/>
 				Last Name: <input type="text" id="consultantLastName" name="consultantLastName" value="${consultantUser.consultantLastName}" required="required"/>
-				<fmt:formatDate value="${consultantUser.consultantDob}" pattern="yyyy-MM-dd'T'HH:mm"" var="conDate" />
+				<fmt:formatDate value="${consultantUser.consultantDob}" pattern="yyyy-MM-dd'T'HH:mm" var="conDate" />
 				Date of Birth: <input type="datetime-local" name="consultantDob" id="consultantDob" value="${conDate}" required="required"/>
 				Education: <input type="text" id="consultantEducation" name="consultantEducation" value="${consultantUser.consultantEducation}" required="required"/>
 				Designation: <input type="text" id="consultantDesignation" name="consultantDesignation" value="${consultantUser.consultantDesignation}" required="required"/>

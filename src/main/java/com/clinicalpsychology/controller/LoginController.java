@@ -7,9 +7,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.clinicalpsychology.dao.EducationDao;
@@ -24,6 +28,7 @@ import com.clinicalpsychology.dao.ReligionDao;
 import com.clinicalpsychology.model.Consultant;
 import com.clinicalpsychology.model.Login;
 import com.clinicalpsychology.model.Patients;
+import com.clinicalpsychology.model.Search;
 import com.clinicalpsychology.service.UserService;
 
 @Controller
@@ -56,6 +61,12 @@ public class LoginController {
 	@Autowired
 	private PatientDao patientDao;
 
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String displayLogin(Model model) {
+		model.addAttribute("login", new Login());
+		return "login";
+	}
+
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ModelAndView showLogin(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView("login");
@@ -71,52 +82,104 @@ public class LoginController {
 		mav.addObject("login", new Login());
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/homePage")
-	public ModelAndView loginProcess(HttpServletRequest request, HttpServletResponse response) {
-		
+	public ModelAndView loginProcess(@RequestParam(required = false) String searchName,
+			@RequestParam(required = false) String searchMobile, @RequestParam(required = false) String searchEmail,
+			@RequestParam(required = false) String searchAge, @RequestParam(required = false) String searchDiagnosis,
+			@RequestParam(required = false) String page, @RequestParam(required = false) String pageSize,
+			@SessionAttribute(name = "userSession") Object userSession) {
 		ModelAndView mav = null;
 		List<Patients> patients = null;
-		Consultant user = (Consultant) request.getSession().getAttribute("userSession");
-		System.out.println(" user from session " + user);
-		if(user == null)
-		{
+		Consultant user = (Consultant) userSession;
+		int page1 = 1;
+		int pageSize1 = 1;
+		long totalPatients = 1;
+		boolean isSearch = false;
+
+		if (!StringUtils.isEmpty(searchName) || !StringUtils.isEmpty(searchAge) || !StringUtils.isEmpty(searchDiagnosis)
+				|| !StringUtils.isEmpty(searchEmail) || !StringUtils.isEmpty(searchMobile)) {
+			isSearch = true;
+			System.out.println(" search name : " + searchName);
+		}
+		if (page != null) {
+			page1 = Integer.valueOf(page);
+		}
+		if (pageSize != null) {
+			System.out.println(" -- " + pageSize);
+			pageSize1 = Integer.valueOf(pageSize);
+			
+		}
+		Search search = new Search(searchName, searchMobile, searchEmail, searchAge, searchDiagnosis);
+		System.out.println(" page: " + page1 + "pageSize: " + pageSize1);
+		if (user == null) {
 			mav = new ModelAndView("login");
 			mav.addObject("login", new Login());
 			mav.addObject("message", "User session expired. please re login  ");
 			return mav;
 		}
-		System.out.println(" user from session " + user.getConsultantId());
-			if (user.getConsultantFirstName().equals("admin")) {
-				patients = patientDao.getPatient();
-				mav = new ModelAndView("adminHome");
+		if (user.getConsultantFirstName().equals("admin")) {
+			if (isSearch) {
+				totalPatients = patientDao.searchPatientsCount(search, null);
+				patients = patientDao.searchPatients(search, null, page1, pageSize1);
 			} else {
-				patients = patientDao.getPatientsByConsultant(user.getConsultantId());
-				mav = new ModelAndView("home");
+				totalPatients = patientDao.getAllPatientsCount();
+				patients = patientDao.getAllPatients(page1, pageSize1);
 			}
-			mav.addObject("patients", patients);
-			mav.addObject("user", user);
-			return mav;
+			mav = new ModelAndView("adminHome");
+		} else {
+			if (isSearch) {
+				totalPatients = patientDao.searchPatientsCount(search, user.getConsultantId());
+				patients = patientDao.searchPatients(search, user.getConsultantId(), page1, pageSize1);
+			} else {
+				totalPatients = patientDao.getPatientsCountByConsultant(user.getConsultantId());
+				patients = patientDao.getPatientsByConsultant(user.getConsultantId(), page1, pageSize1);
+			}
+			mav = new ModelAndView("home");
+		}
+		int totalPages = (int) Math.ceil((double) totalPatients / pageSize1);
+
+		mav.addObject("patients", patients);
+		mav.addObject("currentPage", page);
+		mav.addObject("totalPages", totalPages);
+		mav.addObject("pageSize", pageSize);
+		mav.addObject("user", user);
+		mav.addObject("searchName", searchName);
+		mav.addObject("searchAge", searchAge);
+		mav.addObject("searchDiagnosis", searchDiagnosis);
+		mav.addObject("searchEmail", searchEmail);
+		mav.addObject("searchMobile", searchMobile);
+		return mav;
 	}
 
 	@RequestMapping(value = "/loginProcess", method = RequestMethod.POST)
 	public ModelAndView loginProcess(HttpServletRequest request, HttpServletResponse response,
-			@ModelAttribute("login") Login login) {
+			@ModelAttribute("login") Login login, @ModelAttribute("search") Search search) {
 		ModelAndView mav = null;
 		List<Patients> patients = null;
 
 		Consultant user = userService.validateUser(login);
 
+		int page = 1;
+		int pageSize = 1;
+		long totalPatients = 1;
+
 		if (null != user) {
 			if (user.getConsultantFirstName().equals("admin")) {
-				patients = patientDao.getPatient();
+				totalPatients = patientDao.getAllPatientsCount();
+				patients = patientDao.getAllPatients(page, pageSize);
 				mav = new ModelAndView("adminHome");
 			} else {
-				patients = patientDao.getPatientsByConsultant(user.getConsultantId());
+				totalPatients = patientDao.getPatientsCountByConsultant(user.getConsultantId());
+				patients = patientDao.getPatientsByConsultant(user.getConsultantId(), page, pageSize);
 				mav = new ModelAndView("home");
 			}
+			int totalPages = (int) Math.ceil((double) totalPatients / pageSize);
 			mav.addObject("patients", patients);
 			mav.addObject("user", user);
+			mav.addObject("currentPage", page);
+			mav.addObject("totalPages", totalPages);
+			mav.addObject("pageSize", pageSize);
 		} else {
 			mav = new ModelAndView("login");
 			mav.addObject("message", "Username or Password is wrong!!");

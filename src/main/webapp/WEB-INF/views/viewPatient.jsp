@@ -1,12 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" isELIgnored="false" %>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+	pageEncoding="UTF-8" isELIgnored="false"%>
+	
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+   <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+   <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
 <style><%@include file="./styles.css"%></style>
 <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 <%@include file="./base.jsp"%>
 </head>
 <body>
@@ -18,6 +23,9 @@
 				<form action="${pageContext.request.contextPath}/viewPatient" method="post" >
 				<button type="submit" disabled style="display: none" aria-hidden="true"></button>
 				<input type="hidden" value="${patient.id}" name="id"class="form-control" >
+				
+					<img alt="img" width="200" height="200"  src="data:image/jpeg;base64,${patient.base64imageFile}"/>
+					<br>
 
 					<b>Name:</b>&nbsp;&nbsp;${patient.firstName}
 					<b>Date</b> &nbsp;&nbsp;${patient.createdDate}
@@ -43,6 +51,8 @@
 				
 					<b> Occupation: </b> &nbsp;${patient.occupation}<div></div>
 					&nbsp;<b> 
+					 Languages Known: </b> &nbsp;${patient.languagesKnown}<div></div>
+					&nbsp;<b> 
 					Informants: </b> &nbsp;${patient.informants}<div></div>					
 					<b>Address:</b>  &nbsp; ${patient.address}<div></div>
 					<b>Referral Source: </b> &nbsp;${patient.referalsource} <div></div>
@@ -62,7 +72,9 @@
 				<b>	 3.	Negative History:</b> &nbsp; ${patient.patientsDetails1.negativehistory} <div></div>
 						
 				<b>	 4. Past History of Mental Illness&Physical Illness:</b> &nbsp; ${patient.patientsDetails1.pasthistory} <div></div>
-				<b>	 5. Family History: </b>&nbsp; ${patient.patientsDetails1.familyhistory} <div></div>
+				<b>	 5. Family History: </b>&nbsp; ${patient.patientsDetails1.familyhistory}  
+				<img alt="img" width="200" height="200"  src="data:image/jpeg;base64,${patient.base64FamilyFile}"/>
+				<div></div>
 				<b>	 6.0 Personal History:</b><div></div>
 				<b>	  6.1 Birth & Developmental –</b> &nbsp; ${patient.patientsDetails1.birthdevelopment} <div></div>
 				<b>	  6.2 Scholastic –</b> &nbsp; ${patient.patientsDetails1.scholastic} <div></div>
