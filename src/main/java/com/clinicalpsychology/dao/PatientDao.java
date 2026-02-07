@@ -1,6 +1,5 @@
 package com.clinicalpsychology.dao;
 
-import java.sql.Blob;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -56,10 +55,10 @@ public class PatientDao {
 		boolean and = false;
 		sb.append("FROM Patients p ");
 		if (search != null || consultantId != null) {
-			sb.append("  WHERE ");
+			sb.append("  WHERE 1=1 ");
 		}
 		if (consultantId != null && !consultantId.equalsIgnoreCase("admin")) {
-			sb.append(" p.consultantId = '" + consultantId + "' ");
+			sb.append(" and p.consultantId = '" + consultantId + "' ");
 			and = true;
 		}
 		if (!StringUtils.isEmpty(search.getSearchName()) || !StringUtils.isEmpty(search.getSearchMobile())
@@ -83,7 +82,7 @@ public class PatientDao {
 			}
 		}
 		int firstResultIndex = (page - 1) * pageSize;
-		sb.append(" order by patientNumber ");
+		sb.append(" order by p.patientNumber ");
 		Query query = hibernateTemplate.getSessionFactory().getCurrentSession().createQuery(sb.toString());
 		query.setFirstResult(firstResultIndex);
 		query.setMaxResults(pageSize);
@@ -93,14 +92,12 @@ public class PatientDao {
 	@Transactional
 	public long searchPatientsCount(Search search, String consultantId) {
 		StringBuffer sb = new StringBuffer();
-		boolean and = false;
 		sb.append("select count(1) FROM Patients p ");
 		if (search != null || consultantId != null) {
-			sb.append("  WHERE ");
+			sb.append("  WHERE 1=1 ");
 		}
 		if (consultantId != null && !consultantId.equalsIgnoreCase("admin")) {
-			sb.append(" p.consultantId = '" + consultantId + "' ");
-			and = true;
+			sb.append(" and p.consultantId = '" + consultantId + "' ");
 		}
 		if (!StringUtils.isEmpty(search.getSearchName()) || !StringUtils.isEmpty(search.getSearchMobile())
 				|| !StringUtils.isEmpty(search.getSearchEmail()) || !StringUtils.isEmpty(search.getSearchAge())
@@ -130,13 +127,14 @@ public class PatientDao {
 		return ((List<Long>) this.hibernateTemplate.find(hql)).get(0);
 	}
 
-	// Getting all Product
+	@Transactional
 	public java.util.List<Patients> getAllPatients(int page, int pageSize) {
 		int firstResultIndex = (page - 1) * pageSize;
-		this.hibernateTemplate.setFetchSize(firstResultIndex);
-		this.hibernateTemplate.setMaxResults(pageSize);
-		java.util.List<Patients> products = this.hibernateTemplate.loadAll(Patients.class);
-		return products;
+		String hql = "FROM Patients u order by patientNumber ";
+		Query query = hibernateTemplate.getSessionFactory().getCurrentSession().createQuery(hql);
+		query.setFirstResult(firstResultIndex);
+		query.setMaxResults(pageSize);
+		return (List<Patients>) query.list();
 	}
 
 	// Delete single Product

@@ -90,14 +90,15 @@
 								<td>${p.email1}</td>
 								<td>${p.placeofconsultation}</td>
 								<td><a href="viewPatient/${p.id}" title="View Patient">
-										<i class="fa fa-eye"></i>
-								</a> <a href="updatePatient/${p.id}" title="Update Patient"><i
-										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a> <a
-									href="deletePatient/${p.id}" title="Delete Patient"><i
-										class="fa-sharp fa-solid fa-trash text-danger"></i></a> <a
-									href="addSessionNotes/${p.id}" class="btn btn-outline-success">
-										Sessions </a> <a href="add-document-${p.id}"
-									class="btn btn-outline-success"> Attachments </a></td>
+										<i class="fa fa-eye"></i> </a> 
+									<a href="updatePatient/${p.id}" title="Update Patient"><i
+										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a>
+									<a href="deletePatient/${p.id}" title="Delete Patient"><i
+										class="fa-sharp fa-solid fa-trash text-danger"></i></a>
+								    <a href="addSessionNotes/${p.id}" class="btn btn-outline-success">
+										Sessions </a>
+									<a href="add-document-${p.id}" class="btn btn-outline-success"> Attachments </a>
+								</td>
 							</tr>
 						</c:forEach>
 					</tbody>

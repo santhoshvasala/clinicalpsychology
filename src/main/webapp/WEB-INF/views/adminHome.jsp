@@ -81,7 +81,7 @@
 				<table class="table table-light">
 					<thead class="thead-dark">
 						<tr>
-							<th scope="col">S.NO</th>
+							<th scope="col">Patient Number</th>
 							<th scope="col">Patient Name</th>
 							<th scope="col">Mobile Number</th>
 							<th scope="col">Email</th>
@@ -92,7 +92,7 @@
 					<tbody>
 						<c:forEach items="${patients}" var="p">
 							<tr class="table-light">
-								<th scope="row">${p.id}</th>
+								<th scope="row">${p.patientNumber}</th>
 								<td>${p.firstName}</td>
 								<td>${p.clientmobile}</td>
 								<td>${p.email1}</td>
@@ -104,7 +104,8 @@
 								<a href="deletePatient/${p.id}"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
 									href="updatePatient/${p.id}"><i
-										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a></td>
+										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a>
+								</td>
 							</tr>
 						</c:forEach>
 					</tbody>
