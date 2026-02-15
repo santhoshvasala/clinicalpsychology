@@ -37,7 +37,7 @@
 
 							<tr class="table-light">
 								<td>${p.gendertype}</td>
-								<td> <a href="deleteGender/${p.id}"><i
+								<td> <a href="deleteGender/${p.id}" onclick="return confirm('Are you sure you want to delete? ');"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
 									href="updateGender/${p.id}" hidden="true"><i
 										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a></td>

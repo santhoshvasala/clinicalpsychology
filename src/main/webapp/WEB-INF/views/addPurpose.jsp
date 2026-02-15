@@ -37,7 +37,7 @@
 
 							<tr class="table-light">
 								<td>${p.purposeVal}</td>
-								<td> <a href="deletePurpose/${p.id}"><i
+								<td> <a href="deletePurpose/${p.id}" onclick="return confirm('Are you sure you want to delete? ');"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
 									href="updatePurpose/${p.id}"><i
 										class="fa-sharp fa-solid fa-pen-to-square text-success" hidden="true"></i></a></td>

@@ -86,7 +86,7 @@ public class LoginController {
 	@RequestMapping(value = "/homePage")
 	public ModelAndView loginProcess(@RequestParam(required = false) String searchName,
 			@RequestParam(required = false) String searchMobile, @RequestParam(required = false) String searchEmail,
-			@RequestParam(required = false) String searchAge, @RequestParam(required = false) String searchDiagnosis,
+			@RequestParam(required = false) String searchPlace, @RequestParam(required = false) String searchDiagnosis,
 			@RequestParam(required = false) String page, @RequestParam(required = false) String pageSize,
 			@SessionAttribute(name = "userSession") Object userSession) {
 		ModelAndView mav = null;
@@ -97,10 +97,11 @@ public class LoginController {
 		long totalPatients = 1;
 		boolean isSearch = false;
 
-		if (!StringUtils.isEmpty(searchName) || !StringUtils.isEmpty(searchAge) || !StringUtils.isEmpty(searchDiagnosis)
+		if (!StringUtils.isEmpty(searchName) || !StringUtils.isEmpty(searchPlace) || !StringUtils.isEmpty(searchDiagnosis)
 				|| !StringUtils.isEmpty(searchEmail) || !StringUtils.isEmpty(searchMobile)) {
 			isSearch = true;
 			System.out.println(" search name : " + searchName);
+			System.out.println(" search mobile : " + searchMobile);
 		}
 		if (page != null) {
 			page1 = Integer.valueOf(page);
@@ -110,7 +111,7 @@ public class LoginController {
 			pageSize1 = Integer.valueOf(pageSize);
 			
 		}
-		Search search = new Search(searchName, searchMobile, searchEmail, searchAge, searchDiagnosis);
+		Search search = new Search(searchName, searchMobile, searchEmail,   searchPlace  , searchDiagnosis);
 		System.out.println(" page: " + page1 + "pageSize: " + pageSize1);
 		if (user == null) {
 			mav = new ModelAndView("login");
@@ -145,7 +146,7 @@ public class LoginController {
 		mav.addObject("pageSize", pageSize);
 		mav.addObject("user", user);
 		mav.addObject("searchName", searchName);
-		mav.addObject("searchAge", searchAge);
+		mav.addObject("searchPlace", searchPlace);
 		mav.addObject("searchDiagnosis", searchDiagnosis);
 		mav.addObject("searchEmail", searchEmail);
 		mav.addObject("searchMobile", searchMobile);
@@ -180,19 +181,20 @@ public class LoginController {
 			mav.addObject("currentPage", page);
 			mav.addObject("totalPages", totalPages);
 			mav.addObject("pageSize", pageSize);
+			request.getSession(true).setAttribute("userSession", user);
+			request.getSession(true).setAttribute("genders", genderDao.getGenders());
+			request.getSession(true).setAttribute("religions", religionDao.getReligions());
+			request.getSession(true).setAttribute("maritalStatuslist", maritalStatusDao.getMaritalStatuslist());
+			request.getSession(true).setAttribute("educations", educationDao.getEducations());
+			request.getSession(true).setAttribute("occupations", occupationDao.getOccupations());
+			request.getSession(true).setAttribute("referrels", referralSouceDao.getReferralSources());
+			request.getSession(true).setAttribute("purposelist", purposeDao.getPurposes());
+			request.getSession(true).setAttribute("places", placeOfConsulationDao.getConsultationPlaces());
 		} else {
 			mav = new ModelAndView("login");
-			mav.addObject("message", "Username or Password is wrong!!");
+			mav.addObject("errMessage", "Username or Password is wrong!!");
 		}
-		request.getSession(true).setAttribute("userSession", user);
-		request.getSession(true).setAttribute("genders", genderDao.getGenders());
-		request.getSession(true).setAttribute("religions", religionDao.getReligions());
-		request.getSession(true).setAttribute("maritalStatuslist", maritalStatusDao.getMaritalStatuslist());
-		request.getSession(true).setAttribute("educations", educationDao.getEducations());
-		request.getSession(true).setAttribute("occupations", occupationDao.getOccupations());
-		request.getSession(true).setAttribute("referrels", referralSouceDao.getReferralSources());
-		request.getSession(true).setAttribute("purposelist", purposeDao.getPurposes());
-		request.getSession(true).setAttribute("places", placeOfConsulationDao.getConsultationPlaces());
+		
 
 		return mav;
 	}

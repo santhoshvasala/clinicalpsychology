@@ -17,28 +17,30 @@
 				<h3 align="right" >Welcome ${user.consultantFirstName} <i class="fas fa-cog"></i></h3>
 				
 			  <div class="dropdown-content">
-				    <a href="addConsultant" class="btn btn-outline-success">Add Consultant</a>
-				    <a href="viewAllConsultants" class="btn btn-outline-success"> All Consultants </a>
-					<a href="addEducation" class="btn btn-outline-success"> Add Education </a>
-					<a href="addGender" class="btn btn-outline-success"> Add Gender </a>
-					<a href="addMaritalStatus" class="btn btn-outline-success"> Add MaritalStatus </a>
-					<a href="addOccupation" class="btn btn-outline-success"> Add Occupation </a>
-					<a href="addConsultationPlace" class="btn btn-outline-success"> Add Places of consultation </a>
-					<a href="addPurpose" class="btn btn-outline-success"> Add Purpose </a>
-					<a href="addReferralSource" class="btn btn-outline-success"> Add Refferal Source </a>
-					<a href="addReligion" class="btn btn-outline-success"> Add Religion </a>
-					<a href="logout" class="btn btn-outline-success" > Log Out </a>
+				    <a href="addConsultant" class="btn btn-primary">Add Consultant</a>
+				    <a href="viewAllConsultants" class="btn btn-primary"> All Consultants </a>
+					<a href="addEducation" class="btn btn-primary"> Add Education </a>
+					<a href="addGender" class="btn btn-primary"> Add Gender </a>
+					<a href="addMaritalStatus" class="btn btn-primary"> Add MaritalStatus </a>
+					<a href="addOccupation" class="btn btn-primary"> Add Occupation </a>
+					<a href="addConsultationPlace" class="btn btn-primary"> Add Places of consultation </a>
+					<a href="addPurpose" class="btn btn-primary"> Add Purpose </a>
+					<a href="addReferralSource" class="btn btn-primary"> Add Refferal Source </a>
+					<a href="addReligion" class="btn btn-primary"> Add Religion </a>
+					<a href="logout" class="btn btn-primary" > Log Out </a>
 			  </div>
 			  </div>
 			<form action="homePage" method="get">
 					<table class="table table-light">
 					  <tr>
-						<td><input type="text" id="searchName" name="searchName" value="${searchName}" placeholder="enter name" style="width: 200px; "/>
+						<td><input type="text" id="searchName" name="searchName" value="${searchName}" placeholder="enter name" style="width: 180px; "/>
 						<input type="text" id="searchMobile" name="searchMobile" value="${searchMobile}" placeholder="enter mobilenumber" style="width: 180px; "/>
-						<input type="text" id="searchEmail" name="searchEmail" value="${searchEmail}" placeholder="enter email" style="width: 200px; "/>
-						<input type="text" id="searchAge" name="searchAge" value="${searchAge}" placeholder="enter age" style="width: 180px; "/>
-						<input type="text" id="searchDiagnosis" name="searchDiagnosis" value="${searchDiagnosis}" placeholder="enter diagnosis" style="width: 200px; "/>
-						<button type="submit" class="btn btn-primary">Search</button></td>
+						<input type="text" id="searchEmail" name="searchEmail" value="${searchEmail}" placeholder="enter email" style="width: 180px; "/>
+						<input type="text" id="searchPlace" name="searchPlace" value="${searchPlace}" placeholder="enter place" style="width: 180px; "/>
+						<input type="text" id="searchDiagnosis" name="searchDiagnosis" value="${searchDiagnosis}" placeholder="enter diagnosis" style="width: 180px; "/>
+						<button type="submit" class="btn btn-primary">Search</button>
+						<button type="button" class="btn btn-primary" onclick="window.location.href='homePage?searchName=&searchMobile=&searchEmail=&searchPlace=&searchDiagnosis=&pageSize=5'">
+							 Reset</button></td>
 					  </tr>
 					</table>
 					<table>
@@ -81,18 +83,18 @@
 				<table class="table table-light">
 					<thead class="thead-dark">
 						<tr>
-							<th scope="col">Patient Number</th>
-							<th scope="col">Patient Name</th>
-							<th scope="col">Mobile Number</th>
-							<th scope="col">Email</th>
-							<th scope="col">Place</th>
-							<th scope="col">Consultant ID</th>
+							<th scope="col" style="width: 100px;">Patient Number</th>
+							<th scope="col" style="width: 180px;">Patient Name</th>
+							<th scope="col" style="width: 100px;">Mobile Number</th>
+							<th scope="col" style="width: 100px;">Email</th>
+							<th scope="col" style="width: 100px;">Place</th>
+							<th scope="col" style="width: 100px;">Consultant ID</th>
 						</tr>
 					</thead>
 					<tbody>
 						<c:forEach items="${patients}" var="p">
 							<tr class="table-light">
-								<th scope="row">${p.patientNumber}</th>
+								<th scope="row" style="width: 100px;">${p.patientNumber}</th>
 								<td>${p.firstName}</td>
 								<td>${p.clientmobile}</td>
 								<td>${p.email1}</td>
@@ -101,7 +103,7 @@
 								<td> 
 								<a href="viewPatient/${p.id}"><i
 										class="fa fa-eye"></i></a>
-								<a href="deletePatient/${p.id}"><i
+								<a href="deletePatient/${p.id}" onclick="return confirm('Are you sure you want to delete? ');"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
 									href="updatePatient/${p.id}"><i
 										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a>

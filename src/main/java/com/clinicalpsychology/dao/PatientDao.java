@@ -62,7 +62,7 @@ public class PatientDao {
 			and = true;
 		}
 		if (!StringUtils.isEmpty(search.getSearchName()) || !StringUtils.isEmpty(search.getSearchMobile())
-				|| !StringUtils.isEmpty(search.getSearchEmail()) || !StringUtils.isEmpty(search.getSearchAge())
+				|| !StringUtils.isEmpty(search.getSearchEmail()) || !StringUtils.isEmpty(search.getSearchPlace())
 				|| !StringUtils.isEmpty(search.getSearchDiagnosis())) {
 
 			if (!StringUtils.isEmpty(search.getSearchName())) {
@@ -74,8 +74,8 @@ public class PatientDao {
 			if (!StringUtils.isEmpty(search.getSearchMobile())) {
 				sb.append(" and p.clientmobile like '%" + search.getSearchMobile() + "%'");
 			}
-			if (!StringUtils.isEmpty(search.getSearchAge())) {
-				sb.append(" and p.age like '%" + search.getSearchAge() + "%'");
+			if (!StringUtils.isEmpty(search.getSearchPlace())) {
+				sb.append(" and p.placeofconsultation like '%" + search.getSearchPlace() + "%'");
 			}
 			if (!StringUtils.isEmpty(search.getSearchDiagnosis())) {
 				sb.append(" and p.patientsDetails2.provisionalDiagnosis like '%" + search.getSearchDiagnosis() + "%'");
@@ -100,7 +100,7 @@ public class PatientDao {
 			sb.append(" and p.consultantId = '" + consultantId + "' ");
 		}
 		if (!StringUtils.isEmpty(search.getSearchName()) || !StringUtils.isEmpty(search.getSearchMobile())
-				|| !StringUtils.isEmpty(search.getSearchEmail()) || !StringUtils.isEmpty(search.getSearchAge())
+				|| !StringUtils.isEmpty(search.getSearchEmail()) || !StringUtils.isEmpty(search.getSearchPlace())
 				|| !StringUtils.isEmpty(search.getSearchDiagnosis())) {
 
 			if (!StringUtils.isEmpty(search.getSearchName())) {
@@ -112,8 +112,8 @@ public class PatientDao {
 			if (!StringUtils.isEmpty(search.getSearchMobile())) {
 				sb.append(" and p.clientmobile like '%" + search.getSearchMobile() + "%'");
 			}
-			if (!StringUtils.isEmpty(search.getSearchAge())) {
-				sb.append(" and p.age like '%" + search.getSearchAge() + "%'");
+			if (!StringUtils.isEmpty(search.getSearchPlace())) {
+				sb.append(" and p.placeofconsultation like '%" + search.getSearchPlace() + "%'");
 			}
 			if (!StringUtils.isEmpty(search.getSearchDiagnosis())) {
 				sb.append(" and p.patientsDetails2.provisionalDiagnosis like '%" + search.getSearchDiagnosis() + "%'");
@@ -130,7 +130,7 @@ public class PatientDao {
 	@Transactional
 	public java.util.List<Patients> getAllPatients(int page, int pageSize) {
 		int firstResultIndex = (page - 1) * pageSize;
-		String hql = "FROM Patients u order by patientNumber ";
+		String hql = "FROM Patients u order by patientNumber desc  ";
 		Query query = hibernateTemplate.getSessionFactory().getCurrentSession().createQuery(hql);
 		query.setFirstResult(firstResultIndex);
 		query.setMaxResults(pageSize);
@@ -180,7 +180,7 @@ public class PatientDao {
 	@Transactional
 	public List<Patients> getPatientsByConsultant(String consultantId, int page, int pageSize) {
 		int firstResultIndex = (page - 1) * pageSize;
-		String hql = "FROM Patients u WHERE u.consultantId = '" + consultantId + "' order by patientNumber ";
+		String hql = "FROM Patients u WHERE u.consultantId = '" + consultantId + "' order by patientNumber desc ";
 		Query query = hibernateTemplate.getSessionFactory().getCurrentSession().createQuery(hql);
 		query.setFirstResult(firstResultIndex);
 		query.setMaxResults(pageSize);

@@ -37,7 +37,7 @@
 
 							<tr class="table-light">
 								<td>${p.referralSourceVal}</td>
-								<td> <a href="deleteReferralSource/${p.id}"><i
+								<td> <a href="deleteReferralSource/${p.id}" onclick="return confirm('Are you sure you want to delete? ');"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
 									href="updateReferralSource/${p.id}"><i
 										class="fa-sharp fa-solid fa-pen-to-square text-success" hidden="true"></i></a></td>

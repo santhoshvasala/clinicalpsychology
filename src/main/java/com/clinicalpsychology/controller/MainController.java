@@ -100,7 +100,6 @@ public class MainController {
 		Consultant user = (Consultant) request.getSession().getAttribute("userSession");
 		patient.setConsultantId(user.getConsultantId());
 		patient.setId(patientId);
-		System.out.println(" isProfileChanged " + isProfileChanged);
 		if (isProfileChanged) {
 			patient.setProfilePic(patientPic.getBytes());
 		} else {
@@ -123,11 +122,18 @@ public class MainController {
 	@RequestMapping(value = "/handleAddPatient", method = RequestMethod.POST)
 	public RedirectView handleAddPatient(@ModelAttribute Patients patient, HttpServletRequest request,
 			RedirectAttributes redirectAttributes, @RequestParam("patientPic") MultipartFile patientPic,
-			@RequestParam("historyPic") MultipartFile historyPic) throws IOException {
+			@RequestParam("historyPic") MultipartFile historyPic,
+			@RequestParam("isProfileChanged") boolean isProfileChanged,
+			@RequestParam("isfamilyPicChanged") boolean isfamilyPicChanged) throws IOException {
 		Consultant user = (Consultant) request.getSession().getAttribute("userSession");
 		patient.setConsultantId(user.getConsultantId());
-		patient.setProfilePic(patientPic.getBytes());
-		patient.setFamilyHIstoryPic(historyPic.getBytes());
+		if (isProfileChanged) {
+			patient.setProfilePic(patientPic.getBytes());
+		} 
+
+		if (isfamilyPicChanged) {
+			patient.setFamilyHIstoryPic(historyPic.getBytes());
+		}
 
 		boolean isDupliacte = patientDao.isDuplicatePatient(patient.getFirstName(), patient.getEmail1(),
 				patient.getClientmobile());
@@ -170,8 +176,6 @@ public class MainController {
 			throws IOException {
 		model.addAttribute("title", "Update Product");
 		Patients patient = patientDao.getPatient(pid);
-		System.out.println(" profile -- " + patient.getProfilePic());
-		System.out.println(" b64 -- " + patient.getBase64imageFile());
 
 		if (patient.getProfilePic() != null) {
 			byte[] encodeBase64 = Base64.encodeBase64(patient.getProfilePic());

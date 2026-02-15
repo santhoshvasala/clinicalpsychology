@@ -79,6 +79,9 @@
 <body>
   <div class="login-container">
     <h2>Login</h2>
+    <c:if test="${not empty errMessage}">
+			<div style="color: red;">${errMessage}</div>
+		</c:if>
     <form 	id="loginForm" modelAttribute="login" action="loginProcess"
 			method="post">
       <input type="text" placeholder="Username" required name="username">

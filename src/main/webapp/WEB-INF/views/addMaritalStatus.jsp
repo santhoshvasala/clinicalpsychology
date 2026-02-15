@@ -37,7 +37,7 @@
 
 							<tr class="table-light">
 								<td>${p.maritalStatusVal}</td>
-								<td> <a href="deleteMaritalStatus/${p.id}"><i
+								<td> <a href="deleteMaritalStatus/${p.id}" onclick="return confirm('Are you sure you want to delete? ');"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a></td>
 							</tr>
 						</c:forEach>

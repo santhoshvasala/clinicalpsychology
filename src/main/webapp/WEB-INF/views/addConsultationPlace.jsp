@@ -37,7 +37,7 @@
 
 							<tr class="table-light">
 								<td>${p.consPlace}</td>
-								<td> <a href="deletePlaceOfConsulation/${p.id}"><i
+								<td> <a href="deletePlaceOfConsulation/${p.id}" onclick="return confirm('Are you sure you want to delete? ');"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
 									href="updatePlaceOfConsulation/${p.id}"><i
 										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a></td>

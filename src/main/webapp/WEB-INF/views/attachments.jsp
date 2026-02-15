@@ -35,7 +35,7 @@
 							<td><a href="${pageContext.request.contextPath}/viewAttachment/${doc.id}" target="_blank">${doc.fileName}</a></td>
 							<td>${doc.type}</td>
 							<td><a href="<c:url value='/download-document-${user.id}-${doc.id}' />" class="btn btn-success custom-width">Download</a></td>
-							<td><a href="<c:url value='/delete-document-${user.id}-${doc.id}' />" class="btn btn-danger custom-width">Delete</a></td>
+							<td><a href="<c:url value='/delete-document-${user.id}-${doc.id}' />" class="btn btn-danger custom-width" onclick="return confirm('Are you sure you want to delete? ');">Delete</a></td>
 						</tr>
 					</c:forEach>
 		    		</tbody>

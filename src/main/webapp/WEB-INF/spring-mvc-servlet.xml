@@ -47,7 +47,7 @@
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName"
 			value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/test" />
+		<property name="url" value="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8" />
 		<property name="username" value="root" />
 		<property name="password" value="santhosh" />
 	</bean>
@@ -69,7 +69,7 @@
 
 		<property name="annotatedClasses">
 			<list>
-				<value>com.clinicalpsychology.model.Product</value>
+				<value>com.clinicalpsychology.model.Admin</value>
 				<value>com.clinicalpsychology.model.Patients</value>
 				<value>com.clinicalpsychology.model.PatientsDetails1</value>
 				<value>com.clinicalpsychology.model.PatientsDetails2</value>

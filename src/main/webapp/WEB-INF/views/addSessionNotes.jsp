@@ -56,7 +56,7 @@ textarea {
 							<tr class="table-light">
 								<td>${p.sessionoccuredon}</td>
 								<td>${p.sessionnote}</td>
-								<td> <a href="${pageContext.request.contextPath}/deleteSessionNotes/${p.id}"><i
+								<td> <a href="${pageContext.request.contextPath}/deleteSessionNotes/${p.id}" onclick="return confirm('Are you sure you want to delete? ');"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
 									href="${pageContext.request.contextPath}/updateSessionNotes/${p.id}"><i
 										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a></td>

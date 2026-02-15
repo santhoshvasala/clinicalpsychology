@@ -150,7 +150,7 @@
 					<div class="container text-center mb-4">
 						<a href="${pageContext.request.contextPath}/homePage"
 							class="btn btn-primary"> HOME </a>
-						<a href="${pageContext.request.contextPath}/updatePatient/${patient.id}" class="btn btn-outline-success"> Update Patient Details</a>
+						<a href="${pageContext.request.contextPath}/updatePatient/${patient.id}" class="btn btn-primary"> Update Patient Details</a>
 					</div>
 
 				</form>

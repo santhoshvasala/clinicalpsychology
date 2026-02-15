@@ -5,20 +5,20 @@ public class Search {
 	private String searchName;
 	private String searchMobile;
 	private String searchEmail;
-	private String searchAge;
+	private String searchPlace;
 	private String searchDiagnosis;
 	
 	
 	
 	
 	
-	public Search(String searchName, String searchMobile, String searchEmail, String searchAge,
+	public Search(String searchName, String searchMobile, String searchEmail, String searchPlace,
 			String searchDiagnosis) {
 		super();
 		this.searchName = searchName;
 		this.searchMobile = searchMobile;
 		this.searchEmail = searchEmail;
-		this.searchAge = searchAge;
+		this.searchPlace = searchPlace;
 		this.searchDiagnosis = searchDiagnosis;
 	}
 	public String getSearchName() {
@@ -39,11 +39,12 @@ public class Search {
 	public void setSearchEmail(String searchEmail) {
 		this.searchEmail = searchEmail;
 	}
-	public String getSearchAge() {
-		return searchAge;
+	
+	public String getSearchPlace() {
+		return searchPlace;
 	}
-	public void setSearchAge(String searchAge) {
-		this.searchAge = searchAge;
+	public void setSearchPlace(String searchPlace) {
+		this.searchPlace = searchPlace;
 	}
 	public String getSearchDiagnosis() {
 		return searchDiagnosis;

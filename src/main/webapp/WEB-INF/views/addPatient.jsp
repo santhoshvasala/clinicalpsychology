@@ -226,6 +226,7 @@
 	  if (file1) {
 	    reader1.readAsDataURL(file1);
 	  }
+	  document.getElementById('isfamilyPicChanged').value=true;
   }
   function previewFile() {
 	  var preview = document.querySelector('#profile-image1');
@@ -239,6 +240,7 @@
 	  if (file) {
 	    reader.readAsDataURL(file);
 	  }
+	  document.getElementById('isProfileChanged').value=true;
 	}
 	                      $(function() {
 	            $('#profile-image1').on('click', function() {
@@ -263,6 +265,8 @@
 		<div class="alert alert-success">${message}</div>
 	</c:if>
     <form aria-label="Psychological Case Record" action="handleAddPatient" method="post" id="addPatientForm" enctype="multipart/form-data">
+    <input type="hidden" id="isProfileChanged" name="isProfileChanged" value="false"/>
+	<input type="hidden" id="isfamilyPicChanged"   name="isfamilyPicChanged" value="false"/>
     <button type="submit" disabled style="display: none" aria-hidden="true"></button>
     <fieldset>
     <div class="profile-pic">

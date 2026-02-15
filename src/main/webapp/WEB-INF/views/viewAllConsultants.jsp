@@ -54,7 +54,7 @@ function generateConsultactId() {
 								<td>${p.consultantContact}</td>
 								<td>${p.consultantId}</td>
 								
-								<td> <a href="deleteConsultant/${p.consultantId}"><i
+								<td> <a href="deleteConsultant/${p.consultantId}" onclick="return confirm('Are you sure you want to delete? ');"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a> </td> 
 								<td> <a href="viewConsultant/${p.consultantId}"><i
 										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a></td>

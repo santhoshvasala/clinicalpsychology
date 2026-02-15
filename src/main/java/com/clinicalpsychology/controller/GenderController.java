@@ -15,11 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.clinicalpsychology.dao.GenderDao;
-import com.clinicalpsychology.dao.PatientDao;
-import com.clinicalpsychology.dao.ProductDao;
 import com.clinicalpsychology.model.Gender;
-import com.clinicalpsychology.model.Patients;
-import com.clinicalpsychology.model.Product;
 
 @Controller
 public class GenderController {

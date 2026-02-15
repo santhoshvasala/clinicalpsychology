@@ -38,7 +38,7 @@
 
 							<tr class="table-light">
 								<td>${p.educationDet}</td>
-								<td> <a href="deleteEducation/${p.id}"><i
+								<td> <a href="deleteEducation/${p.id}" onclick="return confirm('Are you sure you want to delete? ');"><i
 										class="fa-sharp fa-solid fa-trash text-danger"></i></a>  <a
 									href="updateEducation/${p.id}" hidden="true" ><i
 										class="fa-sharp fa-solid fa-pen-to-square text-success"></i></a></td>
