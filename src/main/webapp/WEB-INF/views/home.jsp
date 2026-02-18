@@ -13,13 +13,13 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="dropdown">
-					<h3 align="right">
+					<h4 align="right">
 						Welcome ${user.consultantFirstName} <i class="fas fa-cog"></i>
-					</h3>
+					</h4>
 					<div class="dropdown-content">
 						<a href="viewConsultant/${user.consultantId}"
-							class="btn btn-primary"> View/Update Profile </a> <a
-							href="logout" class="btn btn-primary"> Log Out </a>
+							class="btn btn-outline-success"> View/Update Profile </a> <a
+							href="logout" class="btn btn-outline-success"> Log Out </a>
 					</div>
 				</div>
 				<form action="homePage" method="get">
@@ -77,22 +77,22 @@
 				<table class="table table-light">
 					<thead class="thead-dark">
 						<tr>
-							<th scope="col" style="width: 100px;">Patient Number</th>
-							<th scope="col" style="width: 180px;">Patient Name</th>
-							<th scope="col" style="width: 100px;">Mobile Number</th>
-							<th scope="col" style="width: 100px;">Email</th>
-							<th scope="col" style="width: 100px;">Place</th>
+							<th scope="col" style="width: 180px;font-size: 15px;">Patient Number</th>
+							<th scope="col" style="width: 180px;font-size: 15px;">Patient Name</th>
+							<th scope="col" style="width: 160px;font-size: 15px;">Mobile Number</th>
+							<th scope="col" style="width: 100px;font-size: 15px;">Email</th>
+							<th scope="col" style="width: 100px;font-size: 15px;">Place</th>
 						</tr>
 					</thead>
 					<tbody>
 						<c:forEach items="${patients}" var="p">
 
 							<tr class="table-light">
-								<th scope="row">${p.patientNumber}</th>
-								<td>${p.firstName}</td>
-								<td>${p.clientmobile}</td>
-								<td>${p.email1}</td>
-								<td>${p.placeofconsultation}</td>
+								<th scope="row" style="font-size: 15px;">${p.patientNumber}</th>
+								<td style="font-size: 15px;">${p.firstName}</td>
+								<td style="font-size: 15px;">${p.clientmobile}</td>
+								<td style="font-size: 15px;">${p.email1}</td>
+								<td style="font-size: 15px;">${p.placeofconsultation}</td>
 								<td><a href="viewPatient/${p.id}" title="View Patient">
 										<i class="fa fa-eye"></i> </a> 
 									<a href="updatePatient/${p.id}" title="Update Patient"><i

@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 
 @Entity()
-@Table(name = "ReferralSource" )
+@Table(name = "referralsource" )
 public class ReferralSource {
 
 	@Id

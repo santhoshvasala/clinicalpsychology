@@ -18,13 +18,13 @@ public class AdminDao {
 	private HibernateTemplate hibernateTemplate;
 
 	@Transactional
-	public void saveOrUpdateConsultant(Admin admin) {
+	public void saveOrUpdateAdmin(Admin admin) {
 		this.hibernateTemplate.saveOrUpdate(admin);
 	}
 
-	public Admin getAdminDetails(String name, String password) {
+	public Admin getAdminDetails(String name) {
 		List<Admin> list = (ArrayList<Admin>) hibernateTemplate
-				.find("FROM Admin WHERE name = '" + name + "' and password = '" + password + "'");
+				.find("FROM Admin WHERE name = '" + name + "' ");
 		if (list.isEmpty()) {
 			return null;
 		} else {

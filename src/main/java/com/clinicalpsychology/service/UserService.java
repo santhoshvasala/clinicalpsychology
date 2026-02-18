@@ -22,11 +22,18 @@ public class UserService {
 
 		Consultant user = null;
 		if (login.getUsername().equals("admin")) {
-			Admin admin = adminDao.getAdminDetails(login.getUsername(), login.getPassword());
+			Admin admin = adminDao.getAdminDetails(login.getUsername());
 			if (admin != null) {
-				user = new Consultant();
-				user.setConsultantFirstName(admin.getName());
-				user.setConsultantPassword(admin.getPassword());
+				if (admin.getPassword().equalsIgnoreCase(login.getPassword())) {
+					user = new Consultant();
+					user.setConsultantFirstName(admin.getName());
+					user.setConsultantPassword(admin.getPassword());
+				}
+			} else {
+				admin  = new Admin();
+				admin.setName("admin");
+				admin.setPassword("admin");
+				adminDao.saveOrUpdateAdmin(admin);
 			}
 		} else {
 			user = consultantDao.getConsultantByLogin(login.getUsername(), login.getPassword());

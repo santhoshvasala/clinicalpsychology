@@ -10,11 +10,13 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity()
+@Table(name = "patients" )
 public class Patients {
 
 	@Id

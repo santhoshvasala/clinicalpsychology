@@ -10,7 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Entity()
-@Table(name = "Consultant" )
+@Table(name = "consultant" )
 public class Consultant {
 
 	@Id
