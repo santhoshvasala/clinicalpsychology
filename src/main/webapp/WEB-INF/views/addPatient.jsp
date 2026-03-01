@@ -228,6 +228,19 @@
 	  }
 	  document.getElementById('isfamilyPicChanged').value=true;
   }
+  /* function validateAndRedirect() {
+	  const input = document.getElementById('maritalstatus');
+	  alert(input);
+	  if (input.checkValidity()) {
+	    // If valid, redirect
+	    window.location.href = 'https://example.com';
+	  } else {
+	    // If invalid, show browser default message
+	    input.reportValidity();
+	  }
+	} */
+  
+  
   function previewFile() {
 	  var preview = document.querySelector('#profile-image1');
 	  var file    = document.getElementById('profile-image-upload').files[0];
@@ -329,7 +342,8 @@
         <div class="grid">
           <div class="col-4">
           <label for="gender">Gender</label>
-            <select name="gender required="required"">
+            <select name="gender" required="required">
+            <option value="" disabled selected>-- Select --</option>
             <c:forEach items="${genders}" var="gen">
 						<option value="${gen.gendertype}">${gen.gendertype}</option>
 						</c:forEach>
@@ -338,14 +352,16 @@
           <div class="col-4">
             <label for="religion">Religion</label>
             <select name="religion" required="required">
+             <option value="" disabled selected>-- Select --</option>
 	            <c:forEach items="${religions}" var="rel">
 					<option value="${rel.religionval}">${rel.religionval}</option>
 				</c:forEach>
 			</select>
           </div>
           <div class="col-4">
-            <label for="maritalStatus" >Marital status</label>
-            <select name="maritalStatus" required="required">
+            <label for="maritalstatus" >Marital status</label>
+            <select name="maritalstatus" id="maritalstatus" required="required">
+             <option value="" disabled selected>-- Select --</option>
           		<c:forEach items="${maritalStatuslist}" var="mstatus">
 						<option value="${mstatus.maritalStatusVal}">${mstatus.maritalStatusVal}</option>
 				</c:forEach>
@@ -355,6 +371,7 @@
           <div class="col-6">
             <label for="eduqualification">Educational qualification</label>
            		<select name="eduqualification" required="required">
+           		 <option value="" disabled selected>-- Select --</option>
 					<c:forEach items="${educations}" var="educate">
 						<option value="${educate.educationDet}">${educate.educationDet}</option>
 					</c:forEach>
@@ -363,6 +380,7 @@
           <div class="col-6">
             <label for="occupation">Occupation</label>
             	<select name="occupation" required="required">
+            	<option value="" disabled selected>-- Select --</option>
 					<c:forEach items="${occupations}" var="occup">
 						<option value="${occup.occupationDet}">${occup.occupationDet}</option>
 					</c:forEach>
@@ -395,6 +413,7 @@
           <div class="col-6">
             <label for="referalsource">Referral source</label>
             <select name="referalsource">
+             <option value="" disabled selected>-- Select --</option>
 				<c:forEach items="${referrels}" var="reff">
 		 		   <option value="${reff.referralSourceVal}">${reff.referralSourceVal}</option>
 		    	</c:forEach>
@@ -403,6 +422,7 @@
           <div class="col-6">
             <label for="placeofconsultation">Place of consultation</label>
             <select name="placeofconsultation">
+            <option value="" disabled selected>-- Select --</option>
 				<c:forEach items="${places}" var="placelist">
 					<option value="${placelist.consPlace}">${placelist.consPlace}</option>
 				</c:forEach>
@@ -411,6 +431,7 @@
           <div class="col-12">
             <label for="puposeofreferral">Purpose of referral</label>
             <select name="puposeofreferral">
+             <option value="" disabled selected>-- Select --</option>
 				<c:forEach items="${purposelist}" var="purp">
 					<option value="${purp.purposeVal}">${purp.purposeVal}</option>
 				</c:forEach>
@@ -709,37 +730,37 @@
 			<div class="col-3" style="white-space: nowrap;">
 				<label for="patientsDetails2.contentofthought">Content of Thought:</label>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Obsessions& compulsions"> Obsessions& compulsions
-				<input type="text" id="obsessioncompulsionstext" name="obsessioncompulsionstext"> </div>
+				<input type="text" id="obsessioncompulsionstext" name="patientsDetails2.obsessioncompulsionstext"> </div>
 				
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Thought alienation"> Thought alienation
-				<input type="text" id="thoughtalienation"  name="thoughtalienation"> </div>
+				<input type="text" id="thoughtalienation"  name="patientsDetails2.thoughtalienation"> </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)"> Delusions (primary and secondary; persecutory, grandiose,referential, guilt, poverty, <br>
 							<span style="margin-left: 210px;"> infidelity, love, illhealth,nihilisticetc.) </span>
-				<input type="text" id="delusionstext" name="delusionstext">  </div>
+				<input type="text" id="delusionstext" name="patientsDetails2.delusionstext">  </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Overvalued ideas"> Overvalued ideas
-				<input type="text" id="overvaluedideastext" name="overvaluedideastext">  </div>
+				<input type="text" id="overvaluedideastext" name="patientsDetails2.overvaluedideastext">  </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Phobias"> Phobias
-				<input type="text" id="phobiastext" name="phobiastext"> </div>
+				<input type="text" id="phobiastext" name="patientsDetails2.phobiastext"> </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Depressive Cognitions (hopelessness, helplessness, worthlessness):"> Depressive Cognitions (hopelessness, helplessness, worthlessness):
-				<input type="text" id="deressivecongnitionstext" name="deressivecongnitionstext" style="width:150px;">		 </div>	
+				<input type="text" id="deressivecongnitionstext" name="patientsDetails2.deressivecongnitionstext" style="width:150px;">		 </div>	
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Guilt"> Guilt
-				<input type="text" id="guilttext" name="guilttext"> </div>
+				<input type="text" id="guilttext" name="patientsDetails2.guilttext"> </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Worries"> Worries
-				<input type="text" id="worriestext" name="worriestext">	 </div>
+				<input type="text" id="worriestext" name="patientsDetails2.worriestext">	 </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Catastrophic"> Catastrophic
-				<input type="text" id="catastrophictext" name="catastrophictext">	</div>
+				<input type="text" id="catastrophictext" name="patientsDetails2.catastrophictext">	</div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Suicidal"> Suicidal
-				<input type="text" id="suicidaltext" name="suicidaltext">	 </div>
+				<input type="text" id="suicidaltext" name="patientsDetails2.suicidaltext">	 </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="homicidal ideation"> homicidal ideation
-				<input type="text" id="homicidalideationtext" name="homicidalideationtext">	 </div>
+				<input type="text" id="homicidalideationtext" name="patientsDetails2.homicidalideationtext">	 </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Magical thinking"> Magical thinking
-				<input type="text" id="magicalthinkingtext" name="magicalthinkingtext">		</div>																																							
+				<input type="text" id="magicalthinkingtext" name="patientsDetails2.magicalthinkingtext">		</div>																																							
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Ideas of reference"> Ideas of reference
-				<input type="text" id="ideasofreferencetext" name="ideasofreferencetext">	</div>
+				<input type="text" id="ideasofreferencetext" name="patientsDetails2.ideasofreferencetext">	</div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Persecutory ideas"> Persecutory ideas
-				<input type="text" id="persecutoryidastext" name="persecutoryidastext">	 </div>
+				<input type="text" id="persecutoryidastext" name="patientsDetails2.persecutoryidastext">	 </div>
 				<div><input type="checkbox" name="patientsDetails2.contentofthought" value="Others"> Others
-				<input type="text" id="persecutoryidastext" name="othersText">	 </div>
+				<input type="text" id="persecutoryidastext" name="patientsDetails2.othersText">	 </div>
 			</div>
 			</div>
 			<div class="grid">
@@ -780,7 +801,7 @@
 			</div>
 			<div class="grid">
 			<div class="col-3" style="white-space: nowrap;">
-				<label for="patientsDetails2.perception">8.7	Perception – </label>
+				<label for="patientsDetails2.perception">8.6	Perception – </label>
 				<div><input type="checkbox" name="patientsDetails2.perception" value="Auditory Hallucinations"> Auditory Hallucinations </div>
 				<div><input type="checkbox" name="patientsDetails2.perception" value="Visual Hallucinations"> Visual Hallucinations </div>
 				<div><input type="checkbox" name="patientsDetails2.perception" value="Olfactory Hallucinations"> Olfactory Hallucinations </div>

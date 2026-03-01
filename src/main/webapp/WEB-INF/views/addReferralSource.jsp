@@ -15,8 +15,8 @@
 				<form action="${pageContext.request.contextPath}/handleReferralSource" method="post">
 					<button type="submit" disabled style="display: none" aria-hidden="true"></button>
 					<div class="form-group">
-						<label for="name">Referrel Source: </label> <input type="text"
-							class="form-control" id="referralSourceVal" name="referralSourceVal">
+						<label for="name">Referrel Source: </label>
+					    <textarea id="referralSourceVal" name="referralSourceVal" placeholder="" style="width: 591px; "></textarea>
 					</div>
 
 					<div class="container text-center mb-4">

@@ -52,7 +52,7 @@ public class MainController {
 		List<Patients> patients = null;
 		ModelAndView mav = null;
 		int page = 1;
-		int pageSize = 1;
+		int pageSize = 10;
 		long totalPatients = 1;
 		Consultant user = (Consultant) request.getSession().getAttribute("userSession");
 

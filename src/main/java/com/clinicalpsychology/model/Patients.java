@@ -3,6 +3,7 @@ package com.clinicalpsychology.model;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,9 +41,14 @@ public class Patients {
 	private String maritalstatus;
 	private String eduqualification;
 	private String occupation;
+	@Lob
+    @Column(columnDefinition = "TEXT")
 	private String informants;
 	private String address;
+	@Lob
+    @Column(columnDefinition = "TEXT")
 	private String referalsource;
+	
 	private String puposeofreferral;
 	private String placeofconsultation;
 	private String consultantId;

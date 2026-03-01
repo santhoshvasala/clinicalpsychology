@@ -1,11 +1,13 @@
 package com.clinicalpsychology.model;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -17,22 +19,49 @@ public class PatientsDetails1 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer patientdetailid;
+	@Lob
+    @Column(columnDefinition = "TEXT")
     private String presentingcomplaints;
-    
+	@Lob
+    @Column(columnDefinition = "TEXT")
     private String precipitatingfactors;
+	@Lob
+    @Column(columnDefinition = "TEXT")
     private String dutaionofillness;
     private String onset;
     private String course;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String recenttreatmenthistory;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String negativehistory ;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String pasthistory;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String familyhistory;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String birthdevelopment ;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String scholastic ;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String occupational ;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String maritalsexual ;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String habits ;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String social  ;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String personalityadjustment ;
     private String reliabilityinfo ;
     private String adequacyinfo ;

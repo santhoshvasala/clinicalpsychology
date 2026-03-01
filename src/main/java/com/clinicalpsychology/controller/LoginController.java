@@ -93,7 +93,7 @@ public class LoginController {
 		List<Patients> patients = null;
 		Consultant user = (Consultant) userSession;
 		int page1 = 1;
-		int pageSize1 = 1;
+		int pageSize1 = 10;
 		long totalPatients = 1;
 		boolean isSearch = false;
 
@@ -143,7 +143,7 @@ public class LoginController {
 		mav.addObject("patients", patients);
 		mav.addObject("currentPage", page);
 		mav.addObject("totalPages", totalPages);
-		mav.addObject("pageSize", pageSize);
+		mav.addObject("pageSize", pageSize1);
 		mav.addObject("user", user);
 		mav.addObject("searchName", searchName);
 		mav.addObject("searchPlace", searchPlace);
@@ -162,7 +162,7 @@ public class LoginController {
 		Consultant user = userService.validateUser(login);
 
 		int page = 1;
-		int pageSize = 1;
+		int pageSize = 10;
 		long totalPatients = 1;
 
 		if (null != user) {

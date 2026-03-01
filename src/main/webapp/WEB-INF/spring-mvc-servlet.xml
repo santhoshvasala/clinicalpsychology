@@ -47,6 +47,10 @@
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName"
 			value="com.mysql.jdbc.Driver" />
+	<!-- 	<property name="url" value="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8" />
+		<property name="username" value="root" />
+		<property name="password" value="santhosh" />	 -->	
+		
 		<property name="url" value="jdbc:mysql://76.13.240.99:3306/test?useUnicode=true&amp;characterEncoding=UTF-8" />
 		<property name="username" value="drshiva" />
 		<property name="password" value="Solutions123!" />
@@ -63,7 +67,7 @@
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">false</prop>
-			<!-- 	<prop key="hibernate.hbm2ddl.auto">update</prop>  -->
+			 	<prop key="hibernate.hbm2ddl.auto">update</prop> 
 			</props>
 		</property>
 

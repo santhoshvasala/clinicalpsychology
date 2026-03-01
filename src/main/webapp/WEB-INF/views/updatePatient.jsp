@@ -387,6 +387,7 @@ a {
 				<div class="grid">
 					<div class="col-4">
 						<label for="gender">Gender</label> <select name="gender">
+						<option value="" disabled>-- Select --</option>
 							<c:forEach var="frm" items="${genders}">
 								<c:choose>
 									<c:when test="${fn:contains(patient.gender, frm.gendertype)}">
@@ -401,6 +402,7 @@ a {
 					</div>
 					<div class="col-4">
 						<label for="religion">Religion</label> <select name="religion">
+						<option value="" disabled>-- Select --</option>
 							<c:forEach var="frm" items="${religions}">
 								<c:choose>
 									<c:when
@@ -415,8 +417,9 @@ a {
 						</select>
 					</div>
 					<div class="col-4">
-						<label for="maritalStatus">Marital status</label> <select
+						<label for="maritalstatus">Marital status</label> <select
 							name="maritalstatus">
+							<option value="" disabled>-- Select --</option>
 							<c:forEach var="frm" items="${maritalStatuslist}">
 								<c:choose>
 									<c:when
@@ -506,22 +509,6 @@ a {
 					</div>
 					<div class="col-6">
 						<label for="placeofconsultation">Place of consultation</label> <select
-							name="puposeofreferral">
-							<c:forEach var="frm" items="${purposelist}">
-								<c:choose>
-									<c:when
-										test="${fn:contains(patient.puposeofreferral, frm.purposeVal)}">
-										<option value="${frm.purposeVal}" selected="selected">${frm.purposeVal}</option>
-									</c:when>
-									<c:otherwise>
-										<option value="${frm.purposeVal}">${frm.purposeVal}</option>
-									</c:otherwise>
-								</c:choose>
-							</c:forEach>
-						</select>
-					</div>
-					<div class="col-12">
-						<label for="puposeofreferral">Purpose of referral</label> <select
 							name="placeofconsultation">
 							<c:forEach var="frm" items="${places}">
 								<c:choose>
@@ -531,6 +518,23 @@ a {
 									</c:when>
 									<c:otherwise>
 										<option value="${frm.consPlace}">${frm.consPlace}</option>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+							
+						</select>
+					</div>
+					<div class="col-12">
+						<label for="puposeofreferral">Purpose of referral</label> <select
+							name="puposeofreferral">
+							<c:forEach var="frm" items="${purposelist}">
+								<c:choose>
+									<c:when
+										test="${fn:contains(patient.puposeofreferral, frm.purposeVal)}">
+										<option value="${frm.purposeVal}" selected="selected">${frm.purposeVal}</option>
+									</c:when>
+									<c:otherwise>
+										<option value="${frm.purposeVal}">${frm.purposeVal}</option>
 									</c:otherwise>
 								</c:choose>
 							</c:forEach>
@@ -1158,7 +1162,7 @@ a {
 									 <input type="checkbox" name="patientsDetails2.contentofthought"
 								value="Obsessions& compulsions"> Obsessions& compulsions
 									 </c:if>	
-							<input type="text" id="obsessioncompulsionstext" name="obsessioncompulsionstext" value="${patient.patientsDetails2.obsessioncompulsionstext}">
+							<input type="text" id="obsessioncompulsionstext" name="patientsDetails2.obsessioncompulsionstext" value="${patient.patientsDetails2.obsessioncompulsionstext}">
 						</div>
 
 						<div>
@@ -1171,7 +1175,7 @@ a {
 								value="Thought alienation"> Thought alienation 
 							</c:if>	
 							<input
-								type="text" id="thoughtalienation" name="thoughtalienation" value="${patient.patientsDetails2.thoughtalienation}">
+								type="text" id="thoughtalienation" name="patientsDetails2.thoughtalienation" value="${patient.patientsDetails2.thoughtalienation}">
 						</div>
 						<div>
 							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)')}">
@@ -1187,7 +1191,7 @@ a {
 							<span style="margin-left: 210px;"> infidelity, love, illhealth,nihilisticetc.) </span>
 							</c:if>	
 							
-							<input type="text" id="delusionstext" name="delusionstext" value="${patient.patientsDetails2.delusionstext}">
+							<input type="text" id="delusionstext" name="patientsDetails2.delusionstext" value="${patient.patientsDetails2.delusionstext}">
 						</div>
 						<div>
 							
@@ -1202,7 +1206,7 @@ a {
 							</c:if>	
 								
 						 <input
-								type="text" id="overvaluedideastext" name="overvaluedideastext" value="${patient.patientsDetails2.overvaluedideastext}">
+								type="text" id="overvaluedideastext" name="patientsDetails2.overvaluedideastext" value="${patient.patientsDetails2.overvaluedideastext}">
 						</div>
 						<div>
 							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Phobias')}">
@@ -1214,7 +1218,7 @@ a {
 								value="Phobias"> Phobias
 							</c:if>	
 					    	<input type="text"
-								id="phobiastext" name="phobiastext" value="${patient.patientsDetails2.phobiastext}">
+								id="phobiastext" name="patientsDetails2.phobiastext" value="${patient.patientsDetails2.phobiastext}">
 						</div>
 						<div>
 							 
@@ -1232,7 +1236,7 @@ a {
 							worthlessness):
 							</c:if>	
 							<input type="text" id="deressivecongnitionstext"
-								name="deressivecongnitionstext" value="${patient.patientsDetails2.deressivecongnitionstext}" style="width:150px;">
+								name="patientsDetails2.deressivecongnitionstext" value="${patient.patientsDetails2.deressivecongnitionstext}" style="width:150px;">
 						</div>
 						<div>
 							
@@ -1246,7 +1250,7 @@ a {
 							</c:if>	
 							
 							 <input type="text" id="guilttext"
-								name="guilttext" value="${patient.patientsDetails2.guilttext}">
+								name="patientsDetails2.guilttext" value="${patient.patientsDetails2.guilttext}">
 						</div>
 						<div>
 							 
@@ -1259,7 +1263,7 @@ a {
 								value="Worries"> Worries
 							</c:if>		
 							<input type="text"
-								id="worriestext" name="worriestext" value="${patient.patientsDetails2.worriestext}">
+								id="patientsDetails2.worriestext" name="worriestext" value="${patient.patientsDetails2.worriestext}">
 						</div>
 						<div>
 							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Catastrophic')}">
@@ -1271,7 +1275,7 @@ a {
 								value="Catastrophic"> Catastrophic
 							</c:if>	
 							 <input type="text"
-								id="catastrophictext" name="catastrophictext" value="${patient.patientsDetails2.catastrophictext}">
+								id="catastrophictext" name="patientsDetails2.catastrophictext" value="${patient.patientsDetails2.catastrophictext}">
 						</div>
 						<div>
 							
@@ -1284,7 +1288,7 @@ a {
 								value="Suicidal"> Suicidal
 							</c:if>	
 							 <input type="text"
-								id="suicidaltext" name="suicidaltext" value="${patient.patientsDetails2.suicidaltext}">
+								id="suicidaltext" name="patientsDetails2.suicidaltext" value="${patient.patientsDetails2.suicidaltext}">
 						</div>
 						<div>
 							
@@ -1298,7 +1302,7 @@ a {
 							</c:if>		
 							<input
 								type="text" id="homicidalideationtext"
-								name="homicidalideationtext" value="${patient.patientsDetails2.homicidalideationtext}">
+								name="patientsDetails2.homicidalideationtext" value="${patient.patientsDetails2.homicidalideationtext}">
 						</div>
 						<div>
 							
@@ -1311,7 +1315,7 @@ a {
 								value="Magical thinking"> Magical thinking
 							</c:if>	
 							 <input
-								type="text" id="magicalthinkingtext" name="magicalthinkingtext" value="${patient.patientsDetails2.magicalthinkingtext}">
+								type="text" id="magicalthinkingtext" name="patientsDetails2.magicalthinkingtext" value="${patient.patientsDetails2.magicalthinkingtext}">
 						</div>
 						<div>
 							
@@ -1325,7 +1329,7 @@ a {
 							</c:if>		
 						    <input
 								type="text" id="ideasofreferencetext"
-								name="ideasofreferencetext" value="${patient.patientsDetails2.ideasofreferencetext}">
+								name="patientsDetails2.ideasofreferencetext" value="${patient.patientsDetails2.ideasofreferencetext}">
 						</div>
 						<div>
 							
@@ -1338,7 +1342,7 @@ a {
 								value="Persecutory ideas"> Persecutory ideas
 							</c:if>	
 							<input
-								type="text" id="persecutoryidastext" name="persecutoryidastext" value="${patient.patientsDetails2.persecutoryidastext}">
+								type="text" id="persecutoryidastext" name="patientsDetails2.persecutoryidastext" value="${patient.patientsDetails2.persecutoryidastext}">
 						</div>
 						<div>
 							
@@ -1351,7 +1355,7 @@ a {
 								value="Others"> Others
 							</c:if>	
 						 <input type="text"
-								id="othersText" name="othersText" value="${patient.patientsDetails2.othersText}">
+								id="othersText" name="patientsDetails2.othersText" value="${patient.patientsDetails2.othersText}">
 						</div>
 					</div>
 				</div>
@@ -1409,7 +1413,7 @@ a {
 				</div>
 				<div class="grid">
 					<div class="col-3" style="white-space: nowrap;">
-						<label for="patientsDetails2.perception">8.7 Perception –
+						<label for="patientsDetails2.perception">8.6 Perception –
 						</label>
 						
 						<c:forEach var="frm" items="${perceptionlist}">

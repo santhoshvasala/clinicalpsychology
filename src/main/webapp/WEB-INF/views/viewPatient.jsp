@@ -28,7 +28,9 @@
 					<br>
 
 					<b>Name:</b>&nbsp;&nbsp;${patient.firstName}
-					<b>Date</b> &nbsp;&nbsp;${patient.createdDate}
+					<fmt:formatDate value="${patient.createdDate}"
+							pattern="dd-MM-yyyy hh:mm:ss a" var="cDate" />
+					<b>Date</b> &nbsp;&nbsp;${cDate}
 					<div></div>
 					<b>Date of Birth:</b>&nbsp; ${patient.dob}
 					<b>Age: </b>&nbsp; ${patient.age}
@@ -106,7 +108,153 @@
 						<b> 8.4 Thought – </b>
 							<b>  Disorders of stream: </b>&nbsp; ${patient.patientsDetails2.disorderofstream} <div></div>
 							<b>	 Disorders of form: </b>&nbsp; ${patient.patientsDetails2.disorderofform} <div></div>
-							<b>	 Content of Thought: </b>&nbsp; ${patient.patientsDetails2.contentofthought} <div></div>
+							<b>	 Content of Thought: </b>
+							<div>
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Obsessions& compulsions')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Obsessions& compulsions" checked="checked" disabled="disabled"> Obsessions& compulsions 
+								<input type="text" id="obsessioncompulsionstext" name="patientsDetails2.obsessioncompulsionstext" value="${patient.patientsDetails2.obsessioncompulsionstext}" disabled="disabled">
+		    						</c:if>    
+						</div>
+
+						<div>
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Thought alienation')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Thought alienation" checked="checked" disabled="disabled"> Thought alienation  
+								<input
+								type="text" id="thoughtalienation" name="patientsDetails2.thoughtalienation" value="${patient.patientsDetails2.thoughtalienation}" disabled="disabled">
+		    						</c:if>    
+						</div>
+						<div>
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" checked="checked" disabled="disabled"
+								value="Delusions (primary and secondary; persecutory, grandiose, referential, guilt, poverty, infidelity, love, illhealth, nihilisticetc.)">
+							Delusions (primary and secondary; persecutory, grandiose,referential, guilt, poverty, <br>
+							<span style="margin-left: 210px;"> infidelity, love, illhealth,nihilisticetc.) </span>  
+							<input type="text" id="delusionstext" name="patientsDetails2.delusionstext" value="${patient.patientsDetails2.delusionstext}" disabled="disabled">
+		    						</c:if>    
+						</div>
+						<div>
+							
+								
+						<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Overvalued ideas')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" checked="checked" disabled="disabled"
+								value="Overvalued ideas"> Overvalued ideas
+								 <input
+								type="text" id="overvaluedideastext" name="patientsDetails2.overvaluedideastext" value="${patient.patientsDetails2.overvaluedideastext}" disabled="disabled">
+						
+		    						</c:if>    
+						</div>
+						<div>
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Phobias')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" checked="checked" disabled="disabled"
+								value="Phobias"> Phobias
+									<input type="text"
+								id="phobiastext" name="patientsDetails2.phobiastext" value="${patient.patientsDetails2.phobiastext}" disabled="disabled">
+						
+		    						</c:if>    
+					    </div>
+						<div>
+							 
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Depressive Cognitions (hopelessness, helplessness, worthlessness):')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" checked="checked" disabled="disabled"
+								value="Depressive Cognitions (hopelessness, helplessness, worthlessness):">
+							Depressive Cognitions (hopelessness, helplessness,
+							worthlessness):
+							<input type="text" id="deressivecongnitionstext"
+								name="patientsDetails2.deressivecongnitionstext" value="${patient.patientsDetails2.deressivecongnitionstext}" style="width:150px;" disabled="disabled">
+						
+		    						</c:if>    
+							</div>
+						<div>
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Guilt')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" disabled="disabled"
+								value="Guilt" checked="checked"> Guilt
+								<input type="text" id="guilttext"
+								name="patientsDetails2.guilttext" value="${patient.patientsDetails2.guilttext}" disabled="disabled">
+		    						</c:if>    
+						</div>
+						<div>
+							 
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Worries')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" disabled="disabled"
+								value="Worries" checked="checked"> Worries
+								<input type="text"
+								id="patientsDetails2.worriestext" name="worriestext" value="${patient.patientsDetails2.worriestext}">
+		    						</c:if>    
+						</div>
+						<div>
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Catastrophic')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought"
+								value="Catastrophic" checked="checked"> Catastrophic
+								 <input type="text"
+								id="catastrophictext" name="patientsDetails2.catastrophictext" value="${patient.patientsDetails2.catastrophictext}" disabled="disabled">
+		    						</c:if>    
+						</div>
+						<div>
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Suicidal')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" disabled="disabled"
+								value="Suicidal" checked="checked"> Suicidal
+								 <input type="text"
+								id="suicidaltext" name="patientsDetails2.suicidaltext" value="${patient.patientsDetails2.suicidaltext}" disabled="disabled">
+		    						</c:if>    
+						</div>
+						<div>
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'homicidal ideation')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" disabled="disabled"
+								value="homicidal ideation" checked="checked"> homicidal ideation
+								<input
+								type="text" id="homicidalideationtext"
+								name="patientsDetails2.homicidalideationtext" value="${patient.patientsDetails2.homicidalideationtext}" disabled="disabled">
+						
+		    						</c:if>    
+							</div>
+						<div>
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Magical thinking')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" disabled="disabled"
+								value="Magical thinking" checked="checked"> Magical thinking
+								<input
+								type="text" id="magicalthinkingtext" name="patientsDetails2.magicalthinkingtext" value="${patient.patientsDetails2.magicalthinkingtext}" disabled="disabled">
+						
+		    						</c:if>    
+							 </div>
+						<div>
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Ideas of reference')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" disabled="disabled"
+								value="Ideas of reference" checked="checked"> Ideas of reference
+								 <input
+								type="text" id="ideasofreferencetext"
+								name="patientsDetails2.ideasofreferencetext" value="${patient.patientsDetails2.ideasofreferencetext}" disabled="disabled">
+							</c:if>		
+						   
+						</div>
+						<div>
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Persecutory ideas')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" disabled="disabled"
+								value="Persecutory ideas" checked="checked"> Persecutory ideas
+								<input
+								type="text" id="persecutoryidastext" name="patientsDetails2.persecutoryidastext" value="${patient.patientsDetails2.persecutoryidastext}" disabled="disabled">
+						
+		    						</c:if>    
+		   				
+							</div>
+						<div>
+							
+							<c:if test="${fn:contains(patient.patientsDetails2.contentofthought, 'Others')}">
+		     							<input type="checkbox" name="patientsDetails2.contentofthought" disabled="disabled"
+								value="Others" checked="checked"> Others 
+								<input type="text"
+								id="othersText" name="patientsDetails2.othersText" value="${patient.patientsDetails2.othersText}" disabled="disabled">
+		    						</c:if>    
+						</div>
+							<div></div>
 							<b>  Possession of Thought: </b>&nbsp; ${patient.patientsDetails2.possessionofthought} <div></div>
 						<b> 8.5	Mood and Affect – </b><div></div>
 							<b>  Mood (subjective): </b>&nbsp; ${patient.patientsDetails2.mood} <div></div>

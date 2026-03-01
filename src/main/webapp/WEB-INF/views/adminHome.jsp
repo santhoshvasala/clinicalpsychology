@@ -39,7 +39,7 @@
 						<input type="text" id="searchPlace" name="searchPlace" value="${searchPlace}" placeholder="enter place" style="width: 180px; "/>
 						<input type="text" id="searchDiagnosis" name="searchDiagnosis" value="${searchDiagnosis}" placeholder="enter diagnosis" style="width: 180px; "/>
 						<button type="submit" class="btn btn-primary">Search</button>
-						<button type="button" class="btn btn-primary" onclick="window.location.href='homePage?searchName=&searchMobile=&searchEmail=&searchPlace=&searchDiagnosis=&pageSize=5'">
+						<button type="button" class="btn btn-primary" onclick="window.location.href='homePage?searchName=&searchMobile=&searchEmail=&searchPlace=&searchDiagnosis=&pageSize=10'">
 							 Reset</button></td>
 					  </tr>
 					</table>
